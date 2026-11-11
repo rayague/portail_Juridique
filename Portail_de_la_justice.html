@@ -1,0 +1,907 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Portail numérique de services judiciaires – Maquette interactive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,600&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F2F3F7;--surface:#fff;--surface2:#F7F8FB;--ink:#141A2E;--muted:#596079;--line:#E0E3EC;--line2:#C9CEDB;
+--indigo:#1D2A6B;--indigo2:#33449C;--isoft:#EAEDF8;--iink:#1D2A6B;--brass:#94640F;--bsoft:#F6EDDB;
+--ok:#1B6B48;--oksoft:#E2F1E9;--warn:#855600;--warnsoft:#FBEFD6;--bad:#A3291F;--badsoft:#FBE6E3;--info:#22579A;--infosoft:#E5EEF9;
+--btn:#1D2A6B;--btnfg:#fff;--head:#121A47;
+--serif:"Newsreader",Georgia,"Times New Roman",serif;--sans:"Public Sans",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;--ease:cubic-bezier(.2,.8,.2,1);
+color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0C1020;--surface:#141A2F;--surface2:#192038;--ink:#E8EBF4;--muted:#A3AAC0;--line:#252D48;--line2:#343D5E;
+--indigo:#9DADF6;--indigo2:#B7C3FA;--isoft:#1E2750;--iink:#CBD3FB;--brass:#E2B65E;--bsoft:#382B12;
+--ok:#7FD4A8;--oksoft:#12342A;--warn:#F0C66A;--warnsoft:#382A0C;--bad:#FF9C93;--badsoft:#3E1A18;--info:#8DB8F2;--infosoft:#152946;
+--btn:#9DADF6;--btnfg:#0C1020;--head:#090D1D;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0C1020;--surface:#141A2F;--surface2:#192038;--ink:#E8EBF4;--muted:#A3AAC0;--line:#252D48;--line2:#343D5E;
+--indigo:#9DADF6;--indigo2:#B7C3FA;--isoft:#1E2750;--iink:#CBD3FB;--brass:#E2B65E;--bsoft:#382B12;
+--ok:#7FD4A8;--oksoft:#12342A;--warn:#F0C66A;--warnsoft:#382A0C;--bad:#FF9C93;--badsoft:#3E1A18;--info:#8DB8F2;--infosoft:#152946;
+--btn:#9DADF6;--btnfg:#0C1020;--head:#090D1D;color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-padding-top:calc(80px + env(safe-area-inset-top,0px));scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 var(--sans);-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:45;background:var(--surface)}
+body.app::before{background:var(--head)}
+h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:-.01em;line-height:1.15;margin:0 0 .4em;color:var(--ink)}
+h1{font-size:clamp(1.7rem,3vw,2.25rem)}h2{font-size:clamp(1.25rem,2vw,1.5rem)}h3{font-size:1.15rem}
+h4{font:600 1rem/1.3 var(--sans);margin:0 0 .25em}
+p{margin:0 0 .8em}a{color:var(--info)}button{font:inherit;cursor:pointer;color:inherit}
+:focus-visible{outline:3px solid var(--indigo2);outline-offset:2px;border-radius:6px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+svg.i{flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.2em}
+.muted{color:var(--muted)}.small{font-size:.875rem}.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.grow{flex:1;min-width:0}
+.proto{background:var(--bsoft);color:var(--brass);font-size:.8rem;text-align:center;padding:6px 12px}
+/* boutons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--btn);color:var(--btnfg);border:1.5px solid var(--btn);padding:10px 18px;border-radius:10px;font-weight:600;min-height:44px;text-decoration:none;transition:transform .15s var(--ease),box-shadow .2s,background-color .2s}
+.btn:hover{box-shadow:0 8px 20px -10px var(--btn)}.btn:active{transform:scale(.98)}
+.btn.sec{background:var(--surface);color:var(--ink);border-color:var(--line2)}.btn.sec:hover{background:var(--surface2);box-shadow:none}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--info);padding:6px 8px;min-height:40px}.btn.ghost:hover{box-shadow:none;text-decoration:underline}
+.btn.lt{background:#fff;color:#121A47;border-color:#fff}.btn.ol{background:transparent;color:#fff;border-color:rgba(255,255,255,.45)}.btn.ol:hover{background:rgba(255,255,255,.08)}
+.btn.sm{padding:6px 12px;min-height:36px;font-size:.9rem;border-radius:8px}
+.btn.dng{background:var(--bad);border-color:var(--bad);color:#fff}
+.btn.okb{background:var(--ok);border-color:var(--ok);color:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn.dng,:root:not([data-theme="light"]) .btn.okb{color:#0C1020}}
+:root[data-theme="dark"] .btn.dng,:root[data-theme="dark"] .btn.okb{color:#0C1020}
+.btn[disabled]{opacity:.4;cursor:not-allowed;box-shadow:none;transform:none}
+.btn.wide{width:100%}
+/* en-tête public */
+.pub-h{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--surface);border-bottom:1px solid var(--line)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+.pub-h .wrap{display:flex;align-items:center;gap:20px;min-height:68px}
+.brand{display:flex;align-items:center;gap:10px;background:none;border:0;padding:0;text-align:left;color:inherit}
+.brand b{display:block;font:600 1.06rem/1.1 var(--serif)}.brand small{display:block;color:var(--muted);font-size:.76rem}
+.pnav{display:flex;gap:2px;margin-left:auto}.pnav button{background:none;border:0;padding:8px 12px;border-radius:8px;color:var(--muted);font-weight:500}.pnav button:hover{color:var(--ink);background:var(--surface2)}
+.pact{display:flex;gap:8px}
+.burger{display:none;background:none;border:1px solid var(--line);border-radius:10px;min-height:44px;min-width:44px;align-items:center;justify-content:center}
+.mnav{display:none}
+/* héro */
+.hero{position:relative;overflow:hidden;background:#121A47;color:#fff;padding:76px 0 88px}
+.hero::before{content:"";position:absolute;inset:0;background:repeating-radial-gradient(circle at 88% 22%,rgba(255,255,255,.055) 0 1px,transparent 1px 15px);pointer-events:none}
+.hero::after{content:"";position:absolute;inset:auto 0 0;height:4px;background:linear-gradient(90deg,#B98A2E,#E2C27A 50%,#B98A2E)}
+.hero .wrap{position:relative;display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+.hero h1{color:#fff;font-size:clamp(2.05rem,4.4vw,3.2rem);line-height:1.08;max-width:15ch}
+.hero .lead{color:#C9D0EE;font-size:1.1rem;max-width:50ch}
+.demo-card{background:var(--surface);color:var(--ink);border-radius:20px;padding:22px;box-shadow:0 34px 70px -24px rgba(0,0,0,.6)}
+.herotrk{min-height:252px}
+.a1,.a2,.a3,.a4{animation:rise .8s var(--ease) both}.a2{animation-delay:.08s}.a3{animation-delay:.16s}.a4{animation-delay:.26s}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}}
+.hint{display:flex;gap:10px;align-items:flex-start;font-size:.88rem;color:var(--muted);border-top:1px solid var(--line);margin-top:16px;padding-top:14px}.hint svg{color:var(--iink)}
+.band{padding:76px 0}.band.alt{background:var(--surface);border-block:1px solid var(--line)}
+.band .lead{color:var(--muted);max-width:62ch;font-size:1.05rem}
+.grid{display:grid;gap:18px}.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px}
+.space{display:flex;flex-direction:column;gap:12px}.space .ico{width:50px;height:50px;border-radius:14px;background:var(--isoft);color:var(--iink);display:grid;place-items:center}
+.space ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}.space li{display:flex;gap:10px;color:var(--muted);font-size:.95rem}.space li svg{color:var(--ok);margin-top:3px}
+.space .btn{margin-top:auto;align-self:flex-start}
+.ways{display:flex;flex-direction:column;gap:22px}.way{display:flex;gap:16px}.way .ico{width:44px;height:44px;border-radius:12px;background:var(--bsoft);color:var(--brass);display:grid;place-items:center;flex:none}.way p{margin:2px 0 0;color:var(--muted)}
+.steps{counter-reset:s;display:grid;grid-template-columns:repeat(4,1fr);gap:22px;list-style:none;padding:0;margin:28px 0}
+.steps li{counter-increment:s;position:relative;padding-top:52px}
+.steps li::before{content:counter(s);position:absolute;top:0;left:0;width:38px;height:38px;border-radius:50%;background:var(--btn);color:var(--btnfg);display:grid;place-items:center;font:600 1.1rem var(--serif)}
+.steps li::after{content:"";position:absolute;top:18px;left:50px;right:-12px;height:2px;background:var(--line)}.steps li:last-child::after{display:none}
+.steps p{color:var(--muted)}
+.callout{display:flex;gap:14px;background:var(--isoft);border-left:4px solid var(--indigo2);border-radius:10px;padding:16px 18px;color:var(--ink)}.callout>svg{color:var(--iink);margin-top:2px}
+.callout.warnc{background:var(--warnsoft);border-color:var(--warn)}.callout.warnc>svg{color:var(--warn)}
+.callout.okc{background:var(--oksoft);border-color:var(--ok)}.callout.okc>svg{color:var(--ok)}
+details.faq{border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:0 18px}details.faq summary{padding:15px 0;cursor:pointer;font-weight:600}details.faq p{color:var(--muted)}
+footer.pf{background:var(--head);color:#C1C8E6;padding:36px 0 96px;font-size:.9rem}
+/* téléphone USSD */
+.phone{width:270px;margin:0 auto;border-radius:38px;background:#0E1330;padding:16px 14px 20px;box-shadow:0 30px 60px -24px rgba(9,13,32,.55),inset 0 0 0 2px #2A3263}
+.phone .top{width:70px;height:6px;border-radius:3px;background:#2A3263;margin:0 auto 14px}
+.phone .scr{background:#D9E3CF;color:#141A10;border-radius:18px;min-height:280px;padding:16px;display:flex;flex-direction:column}
+.phone pre{margin:0;white-space:pre-wrap;font:500 .95rem/1.45 var(--sans);flex:1}
+.phone .in{display:flex;gap:6px;margin-top:12px}.phone input{flex:1;min-width:0;border:1px solid #9AA88F;border-radius:8px;padding:8px;background:#EEF3E8;color:#141A10;font:inherit}
+.phone button{border:0;border-radius:8px;background:#1D2A6B;color:#fff;padding:8px 12px;font-weight:600}
+.phone .cap{text-align:center;color:#8F98C4;font-size:.78rem;margin-top:12px}
+/* formulaires */
+label.f{display:block;font-weight:600;margin-bottom:16px}label.f span.h{display:block;font-weight:400;color:var(--muted);font-size:.86rem;margin-top:2px}
+input[type=text],input:not([type]),input[type=email],input[type=password],input[type=tel],select,textarea{width:100%;font:inherit;padding:10px 12px;border:1.5px solid var(--line2);border-radius:10px;background:var(--surface);color:var(--ink);margin-top:6px;min-height:46px;transition:border-color .15s,box-shadow .15s}
+textarea{min-height:110px;resize:vertical;line-height:1.5}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--indigo2);box-shadow:0 0 0 4px var(--isoft)}
+.chk{display:flex!important;gap:10px;align-items:flex-start;font-weight:500!important}.chk input{width:20px;height:20px;margin-top:2px;flex:none;accent-color:var(--indigo)}
+.err{color:var(--bad);font-size:.92rem;margin:8px 0;display:flex;gap:8px;align-items:flex-start}
+.otp{font:600 1.7rem/1 var(--serif)!important;letter-spacing:.45em;text-align:center}
+.seg3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:6px 0 22px;padding:4px;background:var(--surface2);border:1px solid var(--line);border-radius:12px}
+.seg3 button{border:0;background:transparent;border-radius:9px;padding:10px 6px;font-weight:600;color:var(--muted);transition:background .2s,color .2s}
+.seg3 button[aria-pressed=true]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(20,26,46,.15)}
+.authbox{max-width:480px;margin:52px auto 110px;padding:0 16px}.authbox .card{padding:30px}
+.secure{display:flex;gap:10px;font-size:.85rem;color:var(--muted);background:var(--surface2);border-radius:10px;padding:12px;margin-top:18px}
+.verified{display:flex;gap:12px;align-items:center;background:var(--oksoft);color:var(--ok);border-radius:12px;padding:14px 16px;animation:pop .35s var(--ease)}
+.checking{text-align:center;padding:18px 0 8px}
+.spin{width:44px;height:44px;border-radius:50%;border:4px solid var(--isoft);border-top-color:var(--indigo2);animation:sp .9s linear infinite;margin:10px auto 16px}@keyframes sp{to{transform:rotate(360deg)}}
+/* coquille applicative */
+.appbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:var(--head);color:#fff}
+.appbar .in{display:flex;align-items:center;gap:12px;padding:10px 20px;min-height:62px}
+.appbar .brand small{color:#AEB7DE}
+.ab{background:rgba(255,255,255,.08);border:0;color:#fff!important;border-radius:10px;min-height:44px;min-width:44px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 12px;position:relative;transition:background .15s}
+.ab:hover{background:rgba(255,255,255,.16)}
+.cnt{position:absolute;top:3px;right:3px;background:#E5484D;color:#fff;font-size:.7rem;font-weight:700;min-width:18px;height:18px;border-radius:9px;display:grid;place-items:center;padding:0 4px}
+.pill{background:rgba(255,255,255,.12);padding:4px 12px;border-radius:99px;font-size:.82rem}
+.layout{display:grid;grid-template-columns:268px minmax(0,1fr);max-width:1440px;margin:0 auto}
+.side{padding:16px 12px 90px;border-right:1px solid var(--line);background:var(--surface);display:flex;flex-direction:column;gap:2px;position:sticky;top:calc(62px + env(safe-area-inset-top,0px));height:calc(100vh - 62px - env(safe-area-inset-top,0px));overflow:auto}
+.who{padding:8px 12px 16px;border-bottom:1px solid var(--line);margin-bottom:10px}.who b{display:block;font-family:var(--serif);font-size:1.08rem}
+.vf{display:inline-flex;gap:5px;align-items:center;color:var(--ok);font-size:.8rem;font-weight:600;margin-top:4px}
+.nv{position:relative;display:flex;align-items:center;gap:12px;background:none;border:0;padding:10px 12px;border-radius:10px;text-align:left;width:100%;min-height:44px;color:var(--muted);font-weight:500;transition:background .15s,color .15s}
+.nv:hover{background:var(--surface2);color:var(--ink)}
+.nv[aria-current=page]{background:var(--isoft);color:var(--iink);font-weight:600}
+.nv[aria-current=page]::before{content:"";position:absolute;left:-12px;top:9px;bottom:9px;width:3px;border-radius:0 3px 3px 0;background:var(--brass)}
+.nv .cnt{position:static;margin-left:auto}
+main#main{padding:30px 32px 130px;min-width:0;min-height:calc(100vh - 100px)}
+.enter{animation:viewin .4s var(--ease) both}@keyframes viewin{from{opacity:0;transform:translateY(8px)}}
+.ph{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin-bottom:24px}.ph h1{margin:0}.ph p{margin:6px 0 0;color:var(--muted);max-width:70ch}
+.crumb{font-size:.9rem;color:var(--muted);margin-bottom:10px}.crumb button{background:none;border:0;color:var(--info);padding:0}.crumb button:hover{text-decoration:underline}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:24px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;text-align:left;display:block;width:100%;transition:border-color .15s,transform .15s var(--ease)}
+button.stat:hover{border-color:var(--indigo2);transform:translateY(-1px)}
+.stat b{display:block;font:600 2rem/1.05 var(--serif);color:var(--ink)}.stat span{color:var(--muted);font-size:.9rem}
+.qa{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:24px}
+.qa button{display:flex;flex-direction:column;align-items:flex-start;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;text-align:left;font-weight:600;transition:border-color .15s,transform .15s var(--ease)}
+.qa button:hover{border-color:var(--indigo2);transform:translateY(-2px)}
+.qa .ico{width:42px;height:42px;border-radius:12px;background:var(--isoft);color:var(--iink);display:grid;place-items:center}
+.next{position:relative;overflow:hidden;display:flex;gap:22px;align-items:center;flex-wrap:wrap;background:var(--head);color:#fff;border-radius:18px;padding:22px 26px;margin-bottom:24px}
+.next::before{content:"";position:absolute;inset:0;background:repeating-radial-gradient(circle at 100% 0,rgba(255,255,255,.06) 0 1px,transparent 1px 13px);pointer-events:none}
+.next>*{position:relative}.next .days{text-align:center;min-width:76px;padding-right:22px;border-right:1px solid rgba(255,255,255,.18)}
+.next .days b{display:block;font:600 2.8rem/1 var(--serif);color:#E2C27A}.next .days span{font-size:.85rem;color:#B9C1E6}
+.next h2{color:#fff;margin:2px 0 4px}
+.split{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:22px;align-items:start}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;margin-bottom:22px;overflow:hidden}
+.panel>header{display:flex;align-items:center;gap:12px;padding:15px 20px;border-bottom:1px solid var(--line)}.panel>header h2,.panel>header h3{margin:0;font-size:1.12rem}
+.panel .body{padding:20px}
+table{width:100%;border-collapse:collapse}th{text-align:left;font-size:.84rem;color:var(--muted);font-weight:600;padding:10px 16px;background:var(--surface2);border-bottom:1px solid var(--line)}
+td{padding:13px 16px;border-bottom:1px solid var(--line);vertical-align:top}tr:last-child td{border-bottom:0}tbody tr{transition:background .12s}tbody tr:hover{background:var(--surface2)}
+td .ref{font-weight:700}
+.seg{display:flex;gap:3px;margin-top:6px}.seg i{width:22px;height:5px;border-radius:3px;background:var(--line)}.seg i.on{background:var(--indigo2)}
+.bd{display:inline-flex;align-items:center;gap:6px;border-radius:99px;padding:3px 10px;font-size:.8rem;font-weight:600;white-space:nowrap}
+.bd.grey{background:var(--surface2);color:var(--muted);border:1px solid var(--line)}.bd.blue{background:var(--infosoft);color:var(--info)}.bd.sky{background:var(--isoft);color:var(--iink)}
+.bd.amber{background:var(--warnsoft);color:var(--warn)}.bd.green{background:var(--oksoft);color:var(--ok)}.bd.orange{background:var(--bsoft);color:var(--brass)}.bd.red{background:var(--badsoft);color:var(--bad)}
+.toolbar{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}.toolbar input{margin:0;max-width:380px}
+.tabs{display:flex;gap:4px;overflow-x:auto;margin-bottom:16px;border-bottom:1px solid var(--line)}
+.tabs button{background:none;border:0;border-bottom:3px solid transparent;padding:10px 14px;color:var(--muted);white-space:nowrap;font-weight:600;transition:color .15s,border-color .2s}.tabs button[aria-selected=true]{color:var(--ink);border-color:var(--brass)}
+.empty{display:flex;gap:12px;align-items:center;padding:18px 20px;border:1.5px dashed var(--line2);border-radius:14px;color:var(--muted);margin-bottom:22px}
+/* notifications */
+.nl{list-style:none;margin:0;padding:0}.nl>li{border-bottom:1px solid var(--line)}.nl>li:last-child{border:0}
+.nrow{display:flex;align-items:center;gap:10px;padding-right:16px}.nrow:hover{background:var(--surface2)}
+.nmain{display:flex;gap:14px;flex:1;min-width:0;text-align:left;background:none;border:0;padding:14px 4px 14px 20px}
+.ni{width:40px;height:40px;border-radius:12px;background:var(--isoft);color:var(--iink);display:grid;place-items:center;flex:none}
+.un .ni{background:var(--btn);color:var(--btnfg)}.dotu{width:9px;height:9px;border-radius:50%;background:#E5484D;margin-top:8px;flex:none}
+.meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:6px}
+.chs{display:inline-flex;gap:6px;flex-wrap:wrap}.chs span{display:inline-flex;gap:4px;align-items:center;font-size:.74rem;color:var(--muted);background:var(--surface2);border:1px solid var(--line);border-radius:99px;padding:1px 8px}
+.ev{padding:12px 20px}
+/* chronologie */
+.tl{list-style:none;margin:0;padding:0}.tl li{position:relative;display:flex;gap:16px;padding-bottom:26px}
+.tl li::before{content:"";position:absolute;left:17px;top:38px;bottom:0;width:2px;background:var(--line)}.tl li:last-child{padding-bottom:0}.tl li:last-child::before{display:none}
+.tl li.done::before{background:var(--indigo2)}
+.tl .dot{width:36px;height:36px;border-radius:50%;border:2px solid var(--line2);background:var(--surface);display:grid;place-items:center;flex:none;color:var(--muted)}
+.tl .done .dot{background:var(--indigo2);border-color:var(--indigo2);color:var(--btnfg)}.tl .cur .dot{border-color:var(--brass);background:var(--bsoft);color:var(--brass);box-shadow:0 0 0 5px var(--bsoft)}
+.tl .todo{opacity:.65}.tl p{margin:0;color:var(--muted);font-size:.93rem}
+/* suivi en deux blocs */
+.trk{display:grid;grid-template-columns:1fr 1fr;gap:12px}.trk .grp{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--surface)}
+.trk .gl{font-size:.84rem;font-weight:700;margin-bottom:10px}.trk .grp:first-child{background:var(--surface2)}
+.trk ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}.trk li{display:flex;gap:10px;align-items:center;font-size:.92rem;transition:color .3s}
+.trk .dot{width:26px;height:26px;border-radius:50%;border:2px solid var(--line2);display:grid;place-items:center;flex:none;color:var(--muted);background:var(--surface);transition:background .3s,border-color .3s}
+.trk .done .dot{background:var(--ok);border-color:var(--ok);color:var(--surface)}.trk .current .dot{border-color:var(--indigo2);color:var(--iink);background:var(--isoft)}
+.trk .warn .dot{border-color:var(--brass);color:var(--brass);background:var(--bsoft)}.trk .fail .dot{border-color:var(--bad);color:var(--bad);background:var(--badsoft)}
+.trk .todo{color:var(--muted)}
+.seal{display:flex;align-items:center;gap:14px;margin-top:14px;padding:12px 16px;border:1.5px dashed var(--brass);border-radius:14px;background:var(--bsoft);color:var(--brass)}
+.seal .disc{width:54px;height:54px;border-radius:50%;border:3px double var(--brass);display:grid;place-items:center;flex:none}
+.seal b{font-family:var(--serif);font-size:1.1rem}
+.seal.stamp .disc{animation:stamp .75s var(--ease) both}.seal.stamp{animation:fade .4s both}
+@keyframes stamp{0%{transform:scale(2.6) rotate(-20deg);opacity:0}55%{transform:scale(.9) rotate(5deg);opacity:1}100%{transform:none}}
+@keyframes fade{from{opacity:0}}
+/* rapport */
+.rtrk{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.rtrk li{position:relative;padding-top:40px;font-size:.88rem;color:var(--muted)}
+.rtrk li b{display:block;color:var(--ink);font-size:.92rem}
+.rtrk .dot{position:absolute;top:0;left:0;width:30px;height:30px;border-radius:50%;border:2px solid var(--line2);background:var(--surface);display:grid;place-items:center}
+.rtrk li::after{content:"";position:absolute;top:14px;left:38px;right:-4px;height:2px;background:var(--line)}.rtrk li:last-child::after{display:none}
+.rtrk .done .dot{background:var(--ok);border-color:var(--ok);color:var(--surface)}.rtrk .done::after{background:var(--ok)}
+.rtrk .cur .dot{border-color:var(--brass);background:var(--bsoft);color:var(--brass)}
+.prose h4{margin-top:18px}.prose p{white-space:pre-wrap;color:var(--ink)}
+.kv{display:grid;grid-template-columns:190px 1fr;gap:8px 16px;margin:0}.kv dt{color:var(--muted);font-size:.92rem}.kv dd{margin:0;font-weight:600}
+.docs{list-style:none;padding:0;margin:0}.docs li{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);animation:fade .3s}.docs li:last-child{border:0}
+.di{width:38px;height:38px;border-radius:10px;background:var(--isoft);color:var(--iink);display:grid;place-items:center;flex:none}
+.recept{position:relative;border:1.5px solid var(--line2);border-radius:16px;background:var(--surface);padding:24px;overflow:hidden}
+.recept::after{content:"PROTOTYPE – DONNÉES FICTIVES";position:absolute;inset:auto -40px 40px -40px;text-align:center;transform:rotate(-12deg);font:700 2.2rem var(--sans);letter-spacing:.1em;color:var(--ink);opacity:.04;pointer-events:none}
+.recept h3{display:flex;gap:10px;align-items:center}
+/* assistant de dépôt */
+.wz{display:flex;gap:6px;list-style:none;padding:0;margin:0 0 22px;overflow-x:auto}.wz li{flex:1;min-width:84px;font-size:.78rem;color:var(--muted);text-align:center}
+.wz .n{width:32px;height:32px;border-radius:50%;margin:0 auto 4px;display:grid;place-items:center;border:2px solid var(--line2);font-weight:700;background:var(--surface);transition:all .25s var(--ease)}
+.wz .done .n{background:var(--ok);border-color:var(--ok);color:var(--surface)}.wz .cur .n{border-color:var(--indigo2);background:var(--isoft);color:var(--iink);transform:scale(1.1)}.wz .cur{color:var(--ink);font-weight:700}
+.wzp{display:none;height:6px;background:var(--line);border-radius:3px;margin-bottom:16px;overflow:hidden}.wzp i{display:block;height:100%;background:var(--indigo2);border-radius:3px;transition:width .4s var(--ease)}
+.choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:22px}
+.choice{border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:12px 14px;text-align:left;display:flex;flex-direction:column;gap:2px;font-weight:600;transition:border-color .15s,background .15s,transform .12s var(--ease)}
+.choice:hover{border-color:var(--line2)}.choice:active{transform:scale(.99)}
+.choice[aria-pressed=true]{border-color:var(--indigo2);background:var(--isoft);box-shadow:inset 0 0 0 1px var(--indigo2)}
+.choice span{font-weight:400;color:var(--muted);font-size:.88rem}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.chip{border:1.5px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 14px;font-weight:600;min-height:44px;transition:all .15s}
+.chip:hover{border-color:var(--line2)}.chip[aria-pressed=true]{background:var(--btn);border-color:var(--btn);color:var(--btnfg)}
+.chip[disabled]{opacity:.38;text-decoration:line-through;cursor:not-allowed}
+.chip.day{display:flex;flex-direction:column;align-items:center;line-height:1.2;padding:8px 12px;min-width:84px}.chip.day small{font-weight:500;opacity:.8}
+.fs h3{margin-top:4px}
+.drop{display:block;border:2px dashed var(--line2);border-radius:14px;background:var(--surface2);padding:26px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s}
+.drop:hover,.drop:focus-within{border-color:var(--indigo2);background:var(--isoft)}.drop svg{color:var(--iink)}
+.wzf{display:flex;gap:10px;justify-content:space-between;margin-top:24px;flex-wrap:wrap}
+.sticky{position:sticky;top:calc(84px + env(safe-area-inset-top,0px))}
+.supp{display:flex;gap:10px;align-items:flex-start;background:var(--bsoft);color:var(--ink);border-radius:12px;padding:12px 14px;font-size:.92rem;margin:14px 0}.supp svg{color:var(--brass);margin-top:2px}
+/* rendez-vous, agents, paiements */
+.rdv{display:flex;gap:16px;align-items:flex-start;padding:16px 20px;border-bottom:1px solid var(--line)}.rdv:last-child{border:0}
+.rdv .date{width:70px;flex:none;text-align:center;border-radius:12px;background:var(--isoft);color:var(--iink);padding:8px 4px;line-height:1.2}
+.rdv .date b{display:block;font:600 1.7rem/1.1 var(--serif)}
+.agent{display:flex;gap:14px;align-items:flex-start;transition:border-color .2s,background .2s}
+.avatar{width:46px;height:46px;border-radius:50%;background:var(--isoft);color:var(--iink);display:grid;place-items:center;font-weight:700;flex:none}
+.agent.abs{border-color:var(--bad)}.agent.abs .avatar{background:var(--badsoft);color:var(--bad)}
+.fee{display:flex;flex-direction:column}.amt{font:600 1.6rem/1 var(--serif)}
+.icoc{width:44px;height:44px;border-radius:12px;background:var(--bsoft);color:var(--brass);display:grid;place-items:center;flex:none}
+.sw{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line);cursor:pointer}.sw:last-of-type{border-bottom:0}
+.sw input{appearance:none;-webkit-appearance:none;width:46px;height:26px;border-radius:99px;background:var(--line2);position:relative;flex:none;cursor:pointer;transition:background .2s;margin:0}
+.sw input::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .22s var(--ease);box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.sw input:checked{background:var(--ok)}.sw input:checked::after{transform:translateX(20px)}
+.sw b{display:block}.sw span{color:var(--muted);font-size:.9rem}
+/* calendrier */
+.cal{display:grid;grid-template-columns:repeat(7,1fr);border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface)}
+.cal .dh{background:var(--surface2);font-size:.8rem;font-weight:600;color:var(--muted);text-align:center;padding:8px 0}
+.cal .c{min-height:86px;border-top:1px solid var(--line);border-left:1px solid var(--line);padding:4px 6px;font-size:.8rem}.cal .c:nth-child(7n+1){border-left:0}
+.cal .c.td b{background:var(--btn);color:var(--btnfg);border-radius:50%;display:inline-grid;place-items:center;width:22px;height:22px}
+.cal .e{display:block;border-radius:5px;padding:1px 5px;margin-top:3px;background:var(--isoft);color:var(--iink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cal .e.a{background:var(--btn);color:var(--btnfg)}
+/* fenêtre, appel, notifications éphémères */
+#modal{position:fixed;inset:0;background:rgba(9,13,32,.55);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);display:none;place-items:center;z-index:100;padding:16px}
+#modal.on{display:grid;animation:fade .2s}
+.mbox{background:var(--surface);border-radius:18px;max-width:560px;width:100%;max-height:90vh;overflow:auto;padding:26px;animation:pop .3s var(--ease);box-shadow:0 30px 80px -20px rgba(0,0,0,.5)}
+.mbox h2{display:flex;gap:10px;align-items:center}
+@keyframes pop{from{opacity:0;transform:translateY(10px) scale(.97)}}
+.mrow{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:20px}
+.call{text-align:center}.call .avc{width:86px;height:86px;border-radius:50%;background:var(--isoft);color:var(--iink);display:grid;place-items:center;margin:10px auto 14px;position:relative}
+.call .avc::after{content:"";position:absolute;inset:-8px;border-radius:50%;border:2px solid var(--indigo2);animation:ring 1.6s ease-out infinite}
+@keyframes ring{from{transform:scale(.9);opacity:.8}to{transform:scale(1.4);opacity:0}}
+.wave{display:flex;gap:4px;justify-content:center;height:30px;align-items:center;margin:8px 0 14px}.wave i{width:4px;height:6px;border-radius:2px;background:var(--indigo2);animation:wv 1s ease-in-out infinite}
+.wave i:nth-child(2){animation-delay:.1s}.wave i:nth-child(3){animation-delay:.2s}.wave i:nth-child(4){animation-delay:.3s}.wave i:nth-child(5){animation-delay:.4s}.wave i:nth-child(6){animation-delay:.3s}.wave i:nth-child(7){animation-delay:.2s}.wave i:nth-child(8){animation-delay:.1s}
+@keyframes wv{0%,100%{height:6px}50%{height:28px}}
+.transcript{background:var(--surface2);border-radius:12px;padding:14px 16px;text-align:left}
+.buzz{width:92px;height:150px;border-radius:18px;border:3px solid var(--ink);margin:12px auto 16px;display:grid;place-items:center;color:var(--ink);animation:buzz 1.3s infinite}
+@keyframes buzz{0%,68%,100%{transform:none}72%{transform:rotate(-4deg)}78%{transform:rotate(4deg)}84%{transform:rotate(-3deg)}90%{transform:rotate(2deg)}}
+.okcirc{width:68px;height:68px;border-radius:50%;background:var(--oksoft);color:var(--ok);display:grid;place-items:center;margin:4px auto 12px;animation:pop .45s var(--ease)}
+#toasts{position:fixed;right:16px;bottom:calc(68px + env(safe-area-inset-bottom,0px));z-index:120;display:flex;flex-direction:column;gap:8px;max-width:380px}
+.toast{background:#141B45;color:#fff;border-radius:12px;padding:12px 16px;box-shadow:0 12px 30px -10px rgba(0,0,0,.45);display:flex;gap:10px;animation:ti .3s var(--ease);font-size:.93rem}
+.toast.ok{border-left:4px solid #4CC38A}.toast.nt{border-left:4px solid #E2C27A}@keyframes ti{from{transform:translateX(16px);opacity:0}}
+#demo{position:fixed;left:0;right:0;bottom:0;background:#0B1030;color:#CDD3EE;z-index:60;border-top:1px solid #2A3263;font-size:.85rem;padding-bottom:env(safe-area-inset-bottom,0px)}
+#demo .in{display:flex;gap:8px;align-items:center;padding:8px 14px;flex-wrap:wrap;max-width:1440px;margin:0 auto}
+#demo button{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);color:#fff;border-radius:9px;padding:6px 12px;min-height:38px;position:relative;display:inline-flex;align-items:center;gap:6px}
+#demo button[aria-pressed=true]{background:#E2C27A;color:#121A47;border-color:#E2C27A;font-weight:700}
+#demo .cnt{position:static}
+@media (max-width:1000px){.g4,.stats,.qa{grid-template-columns:repeat(2,minmax(0,1fr))}.hero .wrap{grid-template-columns:1fr}.steps{grid-template-columns:repeat(2,1fr)}.steps li::after{display:none}.wz li span.t{display:none}.wz li{min-width:40px}.split{grid-template-columns:1fr}.sticky{position:static}.g3{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:860px){.layout{grid-template-columns:1fr}
+.side{position:fixed;top:0;left:0;bottom:0;height:auto;width:290px;z-index:50;transform:translateX(-105%);transition:transform .25s var(--ease);padding-top:calc(78px + env(safe-area-inset-top,0px))}
+.side.open{transform:none;box-shadow:0 0 0 100vmax rgba(9,13,32,.5)}
+.burger-a{display:inline-flex!important}main#main{padding:22px 16px 150px}
+.g2,.g3{grid-template-columns:1fr}.pnav,.pact{display:none}.burger{display:inline-flex;margin-left:auto}
+.mnav{display:flex;flex-direction:column;gap:4px;padding:12px 20px 18px;border-top:1px solid var(--line)}.mnav button{background:none;border:0;text-align:left;padding:12px 4px;font-weight:600}
+.trk,.rtrk{grid-template-columns:1fr}.rtrk li{padding:0 0 0 42px;min-height:34px}.rtrk li::after{display:none}
+.kv{grid-template-columns:1fr}.kv dd{margin-bottom:8px}.choices{grid-template-columns:1fr}.hero{padding:44px 0 56px}.band{padding:48px 0}
+.wzp{display:block}.wz{display:none}.hide-m{display:none}
+table.rt thead{display:none}table.rt,table.rt tbody,table.rt tr,table.rt td{display:block;width:100%}table.rt tr{border-bottom:8px solid var(--bg);padding:6px 0}
+table.rt td{display:flex;justify-content:space-between;gap:14px;border:0;padding:5px 16px;text-align:right}table.rt td::before{content:attr(data-l);color:var(--muted);font-weight:600;text-align:left;flex:none}
+.cal .c{min-height:48px}.cal .e{display:none}.cal .c.hasev{background:var(--isoft)}
+#toasts{left:12px;right:12px;max-width:none}.pill,.appbar .un{display:none}.next .days{border:0;padding:0}}
+@media (max-width:520px){.stats,.steps,.g4{grid-template-columns:1fr}.qa{grid-template-columns:repeat(2,minmax(0,1fr))}.wrap{padding:0 18px}#demo .lbl{display:none}#demo .in{flex-wrap:nowrap;overflow-x:auto;gap:6px}#demo .grow{display:none}#demo button{flex:none;padding:6px 10px}}
+@media (min-width:861px){.burger-a{display:none!important}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div id="app"></div><div id="modal" role="dialog" aria-modal="true" aria-label="Fenêtre"></div><div id="toasts" role="status" aria-live="polite"></div><div id="demo"></div>
+<script>
+/* ===== Utilitaires ===== */
+const TZ='Africa/Porto-Novo';
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fD=d=>new Date(d).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric',timeZone:TZ});
+const fDs=d=>new Date(d).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric',timeZone:TZ});
+const fT=d=>new Date(d).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit',timeZone:TZ});
+const fDT=d=>fDs(d)+' à '+fT(d);
+const fSize=b=>b>1048576?(b/1048576).toFixed(1).replace('.',',')+' Mo':Math.max(1,Math.round(b/1024))+' Ko';
+const kd=d=>new Date(d).toLocaleDateString('en-CA',{timeZone:TZ});
+const TODAY=kd(new Date());
+function workdays(k){const r=[];for(let i=1;r.length<k&&i<30;i++){const d=new Date();d.setDate(d.getDate()+i);const w=d.getDay();if(w!==0&&w!==6)r.push(kd(d))}return r}
+const kDate=k=>new Date(k+'T12:00:00Z');
+const fK=k=>kDate(k).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',timeZone:'UTC'});
+const fKs=k=>kDate(k).toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short',timeZone:'UTC'});
+const daysTo=k=>Math.round((kDate(k)-kDate(TODAY))/864e5);
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const money=n=>n.toLocaleString('fr-FR')+'\u00A0FCFA';
+const val=id=>{const e=document.getElementById(id);return e?e.value:''};
+const nowISO=()=>new Date().toISOString();
+const P={home:'<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>',folder:'<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+file:'<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/>',upload:'<path d="M12 16V4"/><path d="M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/>',
+download:'<path d="M12 4v12"/><path d="M7 11l5 5 5-5"/><path d="M4 20h16"/>',bell:'<path d="M6 17V11a6 6 0 1 1 12 0v6l2 2H4z"/><path d="M10 21h4"/>',calendar:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/>',
+send:'<path d="M21 3L3 11l7 3 3 7z"/><path d="M10 14l11-11"/>',inbox:'<path d="M3 13l3-8h12l3 8"/><path d="M3 13v6h18v-6h-5l-1 2h-6l-1-2z"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',shield:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>',check:'<path d="M5 12l5 5 9-10"/>',
+clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',scale:'<path d="M12 3v18"/><path d="M6 21h12"/><path d="M5 7h14"/><path d="M5 7l-3 7a3 3 0 0 0 6 0z"/><path d="M19 7l-3 7a3 3 0 0 0 6 0z"/>',
+search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
+phone:'<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/>',alert:'<path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.5"/>',
+clip:'<path d="M20 11l-8 8a5 5 0 0 1-7-7l8-8a3.5 3.5 0 0 1 5 5l-8 8a2 2 0 0 1-3-3l7-7"/>',building:'<path d="M4 21V7l8-4 8 4v14"/><path d="M9 21v-5h6v5"/><path d="M9 10h.01M15 10h.01M9 13h.01M15 13h.01"/>',
+users:'<circle cx="9" cy="8" r="3.5"/><path d="M2 20a7 7 0 0 1 14 0"/><circle cx="17" cy="9" r="2.5"/><path d="M17 14a5 5 0 0 1 5 5"/>',history:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 8v4l3 2"/>',
+chev:'<path d="M9 6l6 6-6 6"/>',logout:'<path d="M9 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h4"/><path d="M16 8l4 4-4 4M20 12H9"/>',help:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 1-1 1.7"/><path d="M12 17v.5"/>',
+eye:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',plus:'<path d="M12 5v14M5 12h14"/>',edit:'<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/>',
+ban:'<circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/>',copy:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/>',play:'<path d="M7 4l13 8-13 8z"/>',
+wallet:'<path d="M3 7a2 2 0 0 1 2-2h12v4"/><path d="M3 7v11a2 2 0 0 0 2 2h15V9H5a2 2 0 0 1-2-2z"/><path d="M16 14h.01"/>',
+report:'<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 17v-3M12 17v-5M15 17v-2"/>',
+id:'<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2.2"/><path d="M5.5 16a3.5 3.5 0 0 1 7 0M15 10h3M15 13h3"/>',
+mobile:'<rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/>',volume:'<path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/>',
+swap:'<path d="M4 8h14l-3-3M20 16H6l3 3"/>',hand:'<path d="M8 13V5.5a1.5 1.5 0 0 1 3 0V12M11 11.5V4a1.5 1.5 0 0 1 3 0v8M14 11.5V5.5a1.5 1.5 0 0 1 3 0V14a7 7 0 0 1-7 7h-.5a6 6 0 0 1-4.6-2.2L2.5 15.5a1.6 1.6 0 0 1 2.4-2.1L8 16"/>'};
+const ic=(n,s=20)=>`<svg class="i" width="${s}" height="${s}" viewBox="0 0 24 24" aria-hidden="true">${P[n]||''}</svg>`;
+const logo=(s=36)=>`<svg width="${s}" height="${s}" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="19" fill="#1D2A6B"/><circle cx="20" cy="20" r="15.5" fill="none" stroke="#E2C27A" stroke-width="1.2" stroke-dasharray="1.5 2"/><g stroke="#fff" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11v17M15 29h10M13 15h14"/><path d="M13 15l-3 6.5a3 3 0 0 0 6 0zM27 15l-3 6.5a3 3 0 0 0 6 0z"/></g></svg>`;
+
+/* ===== Référentiels ===== */
+const J1='Tribunal de première instance de première classe de Cotonou',J2='Tribunal de commerce de Cotonou',J3='Tribunal de première instance de Porto-Novo',J4='Cour d’appel de Cotonou';
+const JURS=[J1,J3,J2,J4];
+const USERS={
+ justiciable:{label:'Justiciable',name:'Rosine Adjakpa',npi:'1234567890',tel:'+229 01 97 00 47 21',telM:'+229 01 •• •• 47 21',email:'rosine.adjakpa@exemple.bj',home:'j_dash',vf:'Identité vérifiée par NPI'},
+ avocat:{label:'Avocat',name:'Me Sènami Agbodjan',num:'AV-0187',tel:'+229 01 96 00 12 34',email:'s.agbodjan@cabinet-exemple.bj',bar:'Ordre des avocats du Bénin',home:'a_dash',vf:'Inscrit au tableau, n° AV-0187'},
+ greffe:{label:'Greffe',name:'M. Rodrigue Houngbédji',num:'GR-0042',tel:'+229 01 95 00 00 03',email:'r.houngbedji@greffe-exemple.bj',home:'g_dash',vf:'Greffier, TPI de Cotonou'}};
+const NT={nouvelle_transmission:'send',document_recu:'inbox',document_enregistre:'shield',regularisation:'alert',info:'file',rappel:'calendar',decision:'scale',rapport:'report',rdv:'calendar',paiement:'wallet',compte:'id'};
+const ST={brouillon:{l:'Brouillon',c:'grey',i:'edit'},transmis:{l:'Transmis',c:'blue',i:'send'},recu_plateforme:{l:'Reçu par la plateforme',c:'sky',i:'inbox'},
+ attente_verification:{l:'En vérification au greffe',c:'amber',i:'clock'},enregistre:{l:'Enregistré au greffe',c:'green',i:'shield'},regularisation:{l:'À régulariser',c:'orange',i:'alert'},rejete:{l:'Rejeté avec motif',c:'red',i:'ban'}};
+const RS={transmis:{l:'Transmis au greffe',c:'blue',i:'send'},verse:{l:'Versé au dossier',c:'sky',i:'folder'},magistrat:{l:'Remis au magistrat',c:'amber',i:'scale'},consulte:{l:'Consulté par le magistrat',c:'green',i:'eye'}};
+const RORD=['transmis','verse','magistrat','consulte'];
+const RSTEPS=[['Transmis au greffe','Accusé de réception immédiat'],['Versé au dossier','Coté par le greffe'],['Remis au magistrat','Magistrat chargé de l’affaire'],['Consulté','Lecture confirmée']];
+const RTYPES=['Rapport d’analyse du dossier','Observations sur les réquisitions','Observations sur l’instruction','Demande d’acte','Note de synthèse avant audience'];
+const ACTES=['Conclusions en demande','Conclusions en défense','Conclusions en réplique','Mémoire en demande','Mémoire en défense','Mémoire en réplique','Requête'];
+const QUALITES=[['Avocat du demandeur','Vous représentez la partie qui a saisi la juridiction'],['Avocat du défendeur','Vous représentez la partie assignée'],['Avocat de l’appelant','Recours devant la Cour d’appel'],['Avocat de l’intimé','Partie adverse en appel'],['Avocat d’une partie intervenante','Intervention volontaire ou forcée']];
+const MOTIFS=['Pièce illisible ou fichier corrompu','Bordereau non conforme aux pièces jointes','Qualité de l’intervenant non justifiée','Acte adressé à une mauvaise juridiction','Signature de l’avocat manquante'];
+const ST_STEPS=[['Enregistrement du dossier','Le dossier a été enregistré au greffe de la juridiction.'],['Transmission à la juridiction','Le dossier a été transmis au service compétent.'],['Traitement en cours','Le greffe et le magistrat instruisent le dossier.'],['Audience programmée','Une date d’audience est fixée. Vous recevrez un rappel la veille.'],['Décision rendue','La décision est disponible. Vous pouvez en demander une copie.']];
+const WSTEPS=['Dossier','Nature de l’acte','Qualité','Document principal','Pièces','Bordereau','Récapitulatif','Confirmation'];
+const SVCS={copie:['Retrait d’une copie de décision','Copie simple ou certifiée conforme','a3'],nonappel:['Certificat de non-appel ou de non-opposition','Délivré par le greffe','a3'],consult:['Consultation d’un dossier au greffe','Sur présentation de votre NPI','a1'],remise:['Remise de pièces au greffe','Si vous n’avez pas d’avocat','a2'],info:['Renseignement sur une procédure','Entretien avec un agent','a1']};
+const SLOTS=['08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30','14:00','14:30','15:00','15:30'];
+const PM={mtn:'MTN Mobile Money',moov:'Moov Money',celtiis:'Celtiis Cash',card:'Carte bancaire'};
+const CHL={sms:'SMS',voix:'Appel vocal',email:'Courriel'},CHI={sms:'mobile',voix:'phone',email:'mail'};
+const SENDER={key:'avocat',name:'Me Sènami Agbodjan',role:'Avocat au Barreau du Bénin'};
+const OTHER={key:'autre',name:'Me Ibrahim Tossou',role:'Avocat au Barreau du Bénin'};
+
+function mkDB(){
+ const dossiers=[
+ {id:'d1',ref:'TPI-COT/CIV/2026/1187',jur:J1,nature:'Contentieux locatif – résiliation de bail',parties:'R. Adjakpa c/ Société Immobilière Les Cocotiers',stage:4,dates:['2026-08-19','2026-08-21','2026-09-14','2026-10-29',null],ech:'2026-11-20',echL:'Conclusions en réplique',etat:'Audience programmée',maj:'2026-10-29',aud:{date:'2026-12-03',heure:'09h00',salle:'Salle d’audience n° 2'},jus:true,av:true,
+  events:[{ts:'2026-10-29',t:'Une date d’audience a été fixée au 3 décembre 2026.'},{ts:'2026-10-23',t:'Un acte déposé par votre avocat a été enregistré au greffe.'},{ts:'2026-09-14',t:'Le dossier est passé en phase de traitement.'}]},
+ {id:'d2',ref:'TC-COT/2026/0412',jur:J2,nature:'Recouvrement de créance commerciale',parties:'SARL Atlantique Négoce c/ Horizon Logistique SA',stage:3,dates:['2026-07-02','2026-07-03','2026-07-20',null,null],ech:'2026-11-27',echL:'Conclusions en défense',etat:'Instruction en cours',maj:'2026-11-06',jus:false,av:true,events:[]},
+ {id:'d3',ref:'TPI-PN/FAM/2026/0233',jur:J3,nature:'Partage successoral',parties:'Succession Adjakpa : R. Adjakpa et autres',stage:3,dates:['2026-06-10','2026-06-12','2026-09-02',null,null],ech:'2026-12-10',echL:'Pièces complémentaires',etat:'Traitement en cours',maj:'2026-10-12',jus:true,av:true,
+  events:[{ts:'2026-10-12',t:'Un acte transmis a été rejeté pour fichier illisible ; une nouvelle transmission est attendue.'},{ts:'2026-09-02',t:'Le dossier est passé en phase de traitement.'}]},
+ {id:'d4',ref:'TPI-PN/FON/2025/0871',jur:J3,nature:'Contentieux foncier – bornage',parties:'R. Adjakpa c/ M. K. Hounsou',stage:5,dates:['2025-11-04','2025-11-06','2026-01-15','2026-06-18','2026-10-02'],ech:null,echL:'',etat:'Décision rendue',maj:'2026-10-02',jus:true,av:false,events:[{ts:'2026-10-02',t:'La décision est disponible.'}]},
+ {id:'d5',ref:'CA-COT/COM/2026/0098',jur:J4,nature:'Appel – litige de transport',parties:'Transafrik SA c/ Établissements Dossou',stage:2,dates:['2026-10-05','2026-10-07',null,null,null],ech:'2026-11-13',echL:'Communication des pièces',etat:'Transmis à la juridiction',maj:'2026-11-09',jus:false,av:true,events:[]},
+ {id:'d6',ref:'TPI-COT/COR/2026/0652',jur:J1,nature:'Abus de confiance – audience correctionnelle',parties:'Ministère public c/ C. Ahouansou',stage:3,dates:['2026-07-15','2026-07-16','2026-09-30',null,null],ech:'2026-11-24',echL:'Rapport de la défense',etat:'Traitement en cours',maj:'2026-10-30',jus:false,av:true,penal:true,mag:'Président de la chambre correctionnelle',events:[]},
+ {id:'d7',ref:'TPI-COT/INS/2026/0119',jur:J1,nature:'Instruction – escroquerie',parties:'Ministère public c/ A. Gbènou',stage:3,dates:['2026-05-04','2026-05-06','2026-06-10',null,null],ech:'2026-12-02',echL:'Observations sur l’instruction',etat:'Instruction en cours',maj:'2026-11-03',jus:false,av:true,penal:true,mag:'Juge d’instruction du 3e cabinet',events:[]}];
+ const item=(n,t)=>({n,t});
+ const trans=[
+ {id:'t1',ref:'TR-2026-000291',dossierId:'d1',acte:'Conclusions en demande',qualite:'Avocat du demandeur',sender:SENDER,ts:'2026-10-21T08:12:00Z',status:'enregistre',regNum:'ENR-2026-1043',regTs:'2026-10-23T10:05:00Z',
+  concl:{name:'Conclusions_en_demande_Adjakpa.pdf',size:'1,2 Mo'},pieces:[{name:'Piece_1_Contrat_de_bail.pdf',size:'640 Ko'},{name:'Piece_2_Mise_en_demeure.pdf',size:'210 Ko'}],bordereau:{name:'Bordereau_2_pieces.pdf',items:[item(1,'Contrat de bail du 12 mars 2022'),item(2,'Mise en demeure du 3 juin 2026')]},
+  history:[{ts:'2026-10-21T08:12:00Z',a:'Me Agbodjan',t:'Acte transmis'},{ts:'2026-10-21T08:12:20Z',a:'Plateforme',t:'Accusé de réception technique émis'},{ts:'2026-10-22T09:30:00Z',a:'Greffe',t:'Réception confirmée, vérification en cours'},{ts:'2026-10-23T10:05:00Z',a:'Greffe',t:'Acte enregistré au greffe (ENR-2026-1043)'}]},
+ {id:'t2',ref:'TR-2026-000304',dossierId:'d2',acte:'Mémoire en défense',qualite:'Avocat du demandeur',sender:SENDER,ts:'2026-11-06T14:40:00Z',status:'attente_verification',
+  concl:{name:'Memoire_en_defense_Atlantique.pdf',size:'980 Ko'},pieces:[{name:'Piece_1_Facture_0417.pdf',size:'320 Ko'}],bordereau:{name:'Bordereau_1_piece.pdf',items:[item(1,'Facture n° 0417 du 15 avril 2026')]},
+  history:[{ts:'2026-11-06T14:40:00Z',a:'Me Agbodjan',t:'Acte transmis'},{ts:'2026-11-06T14:40:20Z',a:'Plateforme',t:'Accusé de réception technique émis'},{ts:'2026-11-07T08:55:00Z',a:'Greffe',t:'Réception confirmée, vérification en cours'}]},
+ {id:'t3',ref:'TR-2026-000309',dossierId:'d5',acte:'Requête',qualite:'Avocat de l’appelant',sender:SENDER,ts:'2026-11-09T09:20:00Z',status:'regularisation',motif:'Le bordereau ne correspond pas aux pièces jointes : la pièce n° 4 est mentionnée mais absente du dépôt.',
+  concl:{name:'Requete_Transafrik.pdf',size:'760 Ko'},pieces:[{name:'Piece_1_Connaissement.pdf',size:'410 Ko'},{name:'Piece_2_Lettre_de_voiture.pdf',size:'290 Ko'},{name:'Piece_3_Expertise.pdf',size:'1,8 Mo'}],bordereau:{name:'Bordereau_4_pieces.pdf',items:[item(1,'Connaissement'),item(2,'Lettre de voiture'),item(3,'Rapport d’expertise'),item(4,'Constat d’huissier')]},
+  history:[{ts:'2026-11-09T09:20:00Z',a:'Me Agbodjan',t:'Acte transmis'},{ts:'2026-11-09T09:20:20Z',a:'Plateforme',t:'Accusé de réception technique émis'},{ts:'2026-11-10T07:45:00Z',a:'Greffe',t:'Régularisation demandée'}]},
+ {id:'t4',ref:'TR-2026-000277',dossierId:'d3',acte:'Mémoire en réplique',qualite:'Avocat du demandeur',sender:SENDER,ts:'2026-10-12T10:02:00Z',status:'rejete',motif:'Pièce illisible ou fichier corrompu : merci de transmettre un nouveau fichier PDF.',
+  concl:{name:'Memoire_replique_succession.pdf',size:'1,1 Mo'},pieces:[],bordereau:null,
+  history:[{ts:'2026-10-12T10:02:00Z',a:'Me Agbodjan',t:'Acte transmis'},{ts:'2026-10-12T10:02:20Z',a:'Plateforme',t:'Accusé de réception technique émis'},{ts:'2026-10-13T08:10:00Z',a:'Greffe',t:'Transmission rejetée : fichier illisible'}]},
+ {id:'t5',ref:'TR-2026-000312',dossierId:'d2',acte:'Conclusions en défense',qualite:'Avocat du défendeur',sender:OTHER,ts:'2026-11-10T15:05:00Z',status:'recu_plateforme',
+  concl:{name:'Conclusions_Horizon_Logistique.pdf',size:'1,4 Mo'},pieces:[{name:'Piece_1_Bon_de_livraison.pdf',size:'180 Ko'}],bordereau:{name:'Bordereau_1_piece.pdf',items:[item(1,'Bon de livraison n° 889')]},
+  history:[{ts:'2026-11-10T15:05:00Z',a:'Me Tossou',t:'Acte transmis'},{ts:'2026-11-10T15:05:20Z',a:'Plateforme',t:'Accusé de réception technique émis'}]},
+ {id:'t6',ref:'BR-2026-0007',dossierId:'d1',acte:'Conclusions en réplique',qualite:null,sender:SENDER,ts:'2026-11-08T17:30:00Z',status:'brouillon',concl:null,pieces:[],bordereau:null,history:[{ts:'2026-11-08T17:30:00Z',a:'Me Agbodjan',t:'Brouillon enregistré'}],
+  wiz:{step:3,dossierId:'d1',acte:'Conclusions en réplique',qualite:null,concl:null,pieces:[],bmode:'auto',bordereau:null,certify:false}}];
+ const rap=[{id:'p1',ref:'RP-2026-0031',dossierId:'d7',type:'Observations sur l’instruction',objet:'Observations de la défense sur l’expertise des relevés téléphoniques',
+  faits:'Le mis en examen est poursuivi pour escroquerie sur la base de relevés téléphoniques rattachant sa ligne aux appels adressés aux victimes entre février et avril 2026.',
+  args:'Le rapport d’expertise ne précise pas la méthode d’attribution de la ligne. La ligne a été déclarée perdue le 12 janvier 2026 (pièce n° 1), soit avant la période des faits.',
+  dem:'Ordonner une contre-expertise des relevés et l’audition de l’opérateur sur la date de réattribution de la ligne.',
+  pieces:[{name:'Declaration_de_perte_ligne.pdf',size:'210 Ko'},{name:'Rapport_expertise_annote.pdf',size:'1,1 Mo'}],ts:'2026-11-03T10:15:00Z',st:'magistrat',cote:'D-47',
+  history:[{ts:'2026-11-03T10:15:00Z',a:'Me Agbodjan',t:'Rapport transmis au greffe'},{ts:'2026-11-04T08:40:00Z',a:'Greffe',t:'Versé au dossier sous la cote D-47'},{ts:'2026-11-04T11:02:00Z',a:'Greffe',t:'Remis au juge d’instruction du 3e cabinet'}]}];
+ const B=workdays(3);
+ const rv=(id,code,who,name,svc,day,slot,agent)=>({id,code,who,name,svc,jur:J1,day,slot,agent,st:'confirme'});
+ const rdvs=[rv('v1','RDV-4821','justiciable','Rosine Adjakpa','consult',TODAY,'08:30','a1'),rv('v2','RDV-4822','x','Koffi Assogba','copie',TODAY,'09:30','a1'),rv('v3','RDV-4825','x','Mariam Bello','nonappel',TODAY,'10:00','a1'),
+  rv('v4','RDV-4827','x','Euloge Hounkpè','info',TODAY,'11:00','a1'),rv('v5','RDV-4818','x','Pélagie Dossa','copie',TODAY,'08:00','a3'),rv('v6','RDV-4819','x','Sylvain Akakpo','nonappel',TODAY,'09:00','a3'),
+  rv('v7','RDV-4830','x','Basile Gnonlonfoun','remise',TODAY,'10:30','a2'),rv('v8','RDV-4790','justiciable','Rosine Adjakpa','copie',B[2],'10:00','a3')];
+ const n=(id,type,title,text,ts,read,link,ch)=>({id,type,title,text,ts,read,link,ch});
+ return {dossiers,trans,rap,rdvs,seq:313,reg:1044,nid:50,rid:46,
+ agents:[{id:'a1',civ:'Mme',name:'Clarisse Dossou',guichet:'Guichet 2 – Consultation et renseignements',supp:'a2',absent:false},{id:'a2',civ:'M.',name:'Félicien Agossa',guichet:'Guichet 3 – Accueil et remise de pièces',supp:'a1',absent:false},{id:'a3',civ:'Mme',name:'Nadège Kpossou',guichet:'Guichet 1 – Copies et certificats',supp:'a2',absent:false}],
+ fees:[{id:'f1',role:'justiciable',l:'Copie certifiée conforme de la décision',ref:'TPI-PN/FON/2025/0871',m:1500,st:'du',dem:'DC-2026-0045'},
+  {id:'f2',role:'justiciable',l:'Copie simple du jugement avant dire droit',ref:'TPI-COT/CIV/2026/1187',m:1000,st:'paye',rec:'PAY-2026-01187',pm:'MTN Mobile Money',pts:'2026-09-20T10:12:00Z'},
+  {id:'f3',role:'avocat',l:'Délivrance de copies de pièces de procédure',ref:'TC-COT/2026/0412',m:2500,st:'du'},
+  {id:'f4',role:'avocat',l:'Copie certifiée du procès-verbal d’audience',ref:'TPI-COT/CIV/2026/1187',m:2000,st:'paye',rec:'PAY-2026-01102',pm:'Moov Money',pts:'2026-10-30T15:40:00Z'}],
+ pend:[{id:'k1',name:'Me Arnaud Zinsou',num:'AV-0412',email:'a.zinsou@exemple.bj',motif:'Numéro absent de la dernière liste transmise par l’Ordre. Inscription récente possible.',ts:'2026-11-10T16:20:00Z'}],
+ notifs:{justiciable:[n('n1','rappel','Rappel d’audience','Audience le 3 décembre 2026 à 09h00, dossier TPI-COT/CIV/2026/1187.','2026-11-10T07:00:00Z',false,{v:'j_detail',p:{id:'d1'}},['sms','voix']),
+  n('n2','info','Nouvelle information sur un dossier','Un acte déposé par votre avocat a été enregistré au greffe (TPI-COT/CIV/2026/1187).','2026-10-23T10:06:00Z',true,{v:'j_detail',p:{id:'d1'}},['sms','voix']),
+  n('n3','decision','Décision disponible','La décision du dossier TPI-PN/FON/2025/0871 est disponible.','2026-10-02T12:00:00Z',true,{v:'j_detail',p:{id:'d4'}},['sms'])],
+ avocat:[n('n4','regularisation','Demande de régularisation','TR-2026-000309 : le bordereau ne correspond pas aux pièces jointes.','2026-11-10T07:45:00Z',false,{v:'a_tdetail',p:{id:'t3'}},['sms','email']),
+  n('n5','rapport','Rapport remis au magistrat','RP-2026-0031 a été remis au juge d’instruction du 3e cabinet.','2026-11-04T11:02:00Z',false,{v:'a_rdetail',p:{id:'p1'}},['email']),
+  n('n6','document_enregistre','Document enregistré','TR-2026-000291 enregistré au greffe (ENR-2026-1043).','2026-10-23T10:05:00Z',true,{v:'a_tdetail',p:{id:'t1'}},['email'])],
+ greffe:[n('n7','nouvelle_transmission','Nouvelle transmission','TR-2026-000312 reçue de Me Ibrahim Tossou, dossier TC-COT/2026/0412.','2026-11-10T15:05:00Z',false,{v:'g_detail',p:{id:'t5'}},['email']),
+  n('n8','compte','Compte à vérifier','Me Arnaud Zinsou (AV-0412) n’a pas été trouvé sur la liste de l’Ordre.','2026-11-10T16:20:00Z',false,{v:'g_verif'},['email'])]},
+ recus:[{id:'r1',t:'Avis de fixation d’audience',d:'d1',from:'Greffe du TPI de Cotonou',ts:'2026-10-29T10:50:00Z'},{id:'r2',t:'Certificat d’enregistrement ENR-2026-1043',d:'d1',from:'Greffe du TPI de Cotonou',ts:'2026-10-23T10:05:00Z'},
+  {id:'r3',t:'Convocation à la mise en état',d:'d2',from:'Greffe du Tribunal de commerce',ts:'2026-11-03T09:00:00Z'},{id:'r4',t:'Notification de rejet TR-2026-000277',d:'d3',from:'Greffe du TPI de Porto-Novo',ts:'2026-10-13T08:10:00Z'}],
+ demandes:[{id:'DC-2026-0045',d:'d4',type:'Copie certifiée conforme de la décision',motif:'Besoin de la décision pour les formalités foncières.',ts:'2026-10-05T09:00:00Z',statut:'En attente de paiement',fee:'f1'}],
+ cal:[{d:'2026-11-13',t:'Communication des pièces',did:'d5',k:'e'},{d:'2026-11-19',t:'Mise en état',did:'d2',k:'a'},{d:'2026-11-20',t:'Conclusions en réplique',did:'d1',k:'e'},{d:'2026-11-24',t:'Rapport de la défense',did:'d6',k:'e'},{d:'2026-11-27',t:'Conclusions en défense',did:'d2',k:'e'},{d:'2026-12-02',t:'Observations sur l’instruction',did:'d7',k:'e'},{d:'2026-12-03',t:'Audience 09h00',did:'d1',k:'a'},{d:'2026-12-10',t:'Pièces complémentaires',did:'d3',k:'e'}],
+ prefs:{justiciable:{sms:true,voix:true,email:false,lang:'Français',conf:true,confName:'Gérard Adjakpa',confTel:'+229 01 90 00 55 12'},avocat:{sms:true,voix:false,email:true,lang:'Français'},greffe:{sms:false,voix:false,email:true,lang:'Français'}}};
+}
+let DB=mkDB();
+const dos=id=>DB.dossiers.find(d=>d.id===id);
+const tr=id=>DB.trans.find(t=>t.id===id);
+const rp=id=>DB.rap.find(p=>p.id===id);
+const ag=id=>DB.agents.find(a=>a.id===id);
+const agN=id=>{const a=ag(id);return a.civ+' '+a.name};
+const fee=id=>DB.fees.find(f=>f.id===id);
+const fees=()=>DB.fees.filter(f=>f.role===S.role);
+const mine=()=>DB.trans.filter(t=>t.sender.key==='avocat');
+const myD=()=>DB.dossiers.filter(d=>d.jus);
+const avD=()=>DB.dossiers.filter(d=>d.av);
+const myRdv=()=>DB.rdvs.filter(r=>r.who==='justiciable'&&r.st!=='annule').sort((a,b)=>(a.day+a.slot).localeCompare(b.day+b.slot));
+const unread=r=>DB.notifs[r].filter(n=>!n.read).length;
+
+/* ===== État et navigation ===== */
+const S={view:'home',params:{},role:null,navOpen:false,pubOpen:false,lp:'justiciable',auth:{step:'id'},cal:[2026,10],nf:'all',gtab:'nouvelles',hist:false,pf:'',wiz:null,errs:{},rdv:null,rap:null,acc:null,pay:null,voice:'',stampFor:null,lastView:null,lastRole:null,u:{s:'off'}};
+const NAV={
+ justiciable:[['j_dash','Accueil','home'],['j_proc','Mes procédures','folder'],['rdv','Rendez-vous au greffe','calendar'],['paie','Paiements','wallet'],['j_dem','Demandes de documents','copy'],['notifs','Notifications','bell'],['profil','Profil et alertes','user']],
+ avocat:[['a_dash','Accueil','home'],['a_dossiers','Mes dossiers','folder'],['a_depot','Déposer un acte','upload'],['a_rap','Rapports pénaux','report'],['a_trans','Mes transmissions','send'],['a_recus','Documents reçus','inbox'],['a_cal','Calendrier procédural','calendar'],['paie','Paiements','wallet'],['notifs','Notifications','bell'],['profil','Profil et alertes','user']],
+ greffe:[['g_dash','Accueil','home'],['g_list','Transmissions','inbox'],['g_rap','Rapports pénaux','report'],['g_rdv','Rendez-vous et suppléance','users'],['g_acc','Accueil assisté','hand'],['g_verif','Comptes à vérifier','id'],['g_histo','Historique','history'],['notifs','Notifications','bell'],['profil','Profil et alertes','user']]};
+const PARENT={j_detail:'j_proc',a_tdetail:'a_trans',a_rdetail:'a_rap',a_rnew:'a_rap',g_detail:'g_list',g_rdetail:'g_rap'};
+function navCount(v){const r=S.role;if(v==='notifs')return unread(r);if(v==='paie')return fees().filter(f=>f.st==='du').length;
+ if(v==='g_list')return gC('nouvelles');if(v==='g_rap')return DB.rap.filter(p=>p.st==='transmis'||p.st==='verse').length;if(v==='g_verif')return DB.pend.length;return 0}
+function go(v,p={}){S.view=v;S.params=p;S.navOpen=false;S.pubOpen=false;S.errs={};if(v==='login')S.auth={step:'id'};if(v!=='g_detail')S.hist=false;render();window.scrollTo(0,0)}
+function login(r){S.role=r;go(USERS[r].home);toast('Connecté à l’espace '+USERS[r].label.toLowerCase(),'ok')}
+function logout(){S.role=null;go('home')}
+function switchRole(r){S.role=r;go(USERS[r].home)}
+function jump(id){if(S.view!=='home'){S.view='home';}S.pubOpen=false;render();setTimeout(()=>{const e=document.getElementById(id);if(e)e.scrollIntoView({behavior:'smooth'})},40)}
+function toast(m,k='nt'){const e=document.createElement('div');e.className='toast '+k;e.innerHTML=ic(k==='ok'?'check':'bell',18)+'<span>'+m+'</span>';const c=document.getElementById('toasts');c.appendChild(e);while(c.children.length>3)c.firstChild.remove();setTimeout(()=>e.remove(),5200)}
+function openModal(h){const m=document.getElementById('modal');m.innerHTML='<div class="mbox">'+h+'</div>';m.classList.add('on');const f=m.querySelector('textarea,input,select,.btn');if(f)setTimeout(()=>f.focus(),40)}
+function closeModal(){const m=document.getElementById('modal');m.classList.remove('on');m.innerHTML='';try{speechSynthesis.cancel()}catch(e){}}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});
+
+/* ===== Notifications multicanal et appel vocal ===== */
+function notify(role,type,title,text,link,voice){const p=DB.prefs[role],ch=[];if(p.sms)ch.push('sms');if(p.voix)ch.push('voix');if(p.email)ch.push('email');
+ DB.notifs[role].unshift({id:'n'+(++DB.nid),type,title,text,voice:voice||null,ts:nowISO(),read:false,link,ch});
+ const cl=ch.map(c=>c==='sms'?'SMS':CHL[c].toLowerCase()).join(', ');toast(role===S.role?`${title}${cl?'. Également envoyé par '+cl+'.':''}`:`${USERS[role].label} prévenu : ${title}${cl?' ('+cl+')':''}`)}
+function speak(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='fr-FR';u.rate=.95;speechSynthesis.speak(u)}catch(e){toast('La lecture vocale n’est pas disponible dans ce navigateur.')}}
+function callModal(text,title){S.voice=text;openModal(`<div class="call"><p class="small muted" style="margin:0">Appel automatique du portail</p><div class="avc">${ic('phone',34)}</div><h2 style="justify-content:center;margin-bottom:2px">Portail de la justice</h2><p class="muted small">${esc(title||'Message vocal')}</p><div class="wave" aria-hidden="true">${'<i></i>'.repeat(9)}</div><div class="transcript">${esc(text)}</div><div class="mrow" style="justify-content:center"><button class="btn sec" onclick="closeModal()">${ic('x',18)}Raccrocher</button><button class="btn" onclick="speak(S.voice)">${ic('volume',18)}Écouter le message</button></div><p class="small muted" style="margin:14px 0 0">Dans le service réel, l’appel est passé automatiquement, dans la langue choisie par le justiciable, et peut être réécouté en appuyant sur 1.</p></div>`)}
+function dosVoice(d){return `Bonjour, ici le portail de la justice. Voici l’état de votre dossier de ${d.nature.toLowerCase()}, au ${d.jur}. Étape actuelle : ${d.etat.toLowerCase()}. ${d.aud?'Votre audience est fixée au '+fD(d.aud.date)+' à '+d.aud.heure.replace('h00',' heures')+', '+d.aud.salle.toLowerCase()+'.':''} Pour réécouter ce message, appuyez sur 1.`}
+function listenDossier(id){callModal(dosVoice(dos(id)),'État de votre dossier')}
+function playNotif(id){const n=DB.notifs[S.role].find(x=>x.id===id);callModal(n.voice||('Bonjour, ici le portail de la justice. '+n.title+'. '+n.text),n.title)}
+function openNotif(id){const n=DB.notifs[S.role].find(x=>x.id===id);n.read=true;if(n.link)go(n.link.v,n.link.p||{});else render()}
+function readAll(){DB.notifs[S.role].forEach(n=>n.read=true);render()}
+function setPref(k,v){DB.prefs[S.role][k]=v;toast('Préférence enregistrée','ok');render()}
+function dl(){toast('Téléchargement simulé : aucun fichier réel dans cette maquette')}
+function resetDemo(){DB=mkDB();S.role=null;S.wiz=null;S.rdv=null;S.rap=null;S.acc=null;closeModal();go('home');toast('Démonstration réinitialisée','ok')}
+
+/* ===== Connexion ===== */
+function authStart(){const r=S.lp,a=S.auth;a.err='';
+ if(r==='justiciable'){const v=val('npi').replace(/\s/g,'');if(!/^\d{10}$/.test(v)){a.err='Le NPI comporte 10 chiffres. Il figure sur votre carte d’identité biométrique ou votre certificat d’identification personnelle.';render();return}
+  a.npi=v;a.step='check';render();setTimeout(()=>{if(S.auth.step==='check'){S.auth.step='otp';render()}},1400);return}
+ if(r==='avocat'){const v=val('bar').trim().toUpperCase(),pw=val('pw');if(!/^AV-\d{3,4}$/.test(v)){a.err='Saisissez votre numéro d’inscription au tableau, au format AV-0000.';render();return}if(pw.length<6){a.err='Saisissez votre mot de passe (6 caractères minimum).';render();return}
+  a.bar=v;a.step='check';render();setTimeout(()=>{if(S.auth.step!=='check')return;if(v===USERS.avocat.num){S.auth.step='found'}else{S.auth.step='relay';if(!DB.pend.find(p=>p.num===v)){DB.pend.unshift({id:'k'+(++DB.nid),name:'Avocat non identifié',num:v,email:'—',motif:'Numéro absent de la liste transmise par l’Ordre.',ts:nowISO()});DB.notifs.greffe.unshift({id:'n'+(++DB.nid),type:'compte',title:'Compte à vérifier',text:'Le numéro '+v+' n’a pas été trouvé sur la liste de l’Ordre.',ts:nowISO(),read:false,link:{v:'g_verif'},ch:['email']})}}render()},1500);return}
+ if(val('mat').trim().length<4||val('gpw').length<6){a.err='Saisissez votre matricule et votre mot de passe.';render();return}login('greffe')}
+function authOtp(){if(val('otp').trim()!=='482913'){S.auth.err='Code incorrect. Saisissez le code à 6 chiffres reçu par SMS (démonstration : 482913).';render();return}login('justiciable')}
+
+/* ===== Logique métier : transmissions ===== */
+const hist=(t,a,x)=>t.history.push({ts:nowISO(),a,t:x});
+function confirmReception(id){const t=tr(id);t.status='attente_verification';hist(t,'Greffe','Réception confirmée, vérification en cours');
+ notify('avocat','document_recu','Réception confirmée par le greffe',t.ref+' est en cours de vérification.',{v:'a_tdetail',p:{id}});render()}
+function registerAct(id){const t=tr(id),d=dos(t.dossierId);t.status='enregistre';t.regNum='ENR-2026-'+(DB.reg++);t.regTs=nowISO();hist(t,'Greffe','Acte enregistré au greffe ('+t.regNum+')');S.stampFor=id;
+ DB.recus.unshift({id:'r'+(++DB.rid),t:'Certificat d’enregistrement '+t.regNum,d:d.id,from:'Greffe – '+d.jur,ts:nowISO()});
+ notify('avocat','document_enregistre','Acte enregistré au greffe',t.ref+' est enregistré sous le n° '+t.regNum+'.',{v:'a_tdetail',p:{id}});
+ if(d.jus){d.events.unshift({ts:nowISO(),t:'Un acte déposé par votre avocat a été enregistré au greffe.'});d.maj=nowISO();notify('justiciable','info','Nouvelle information sur votre dossier','Un acte a été enregistré au greffe (dossier '+d.ref+').',{v:'j_detail',p:{id:d.id}},'Bonjour, ici le portail de la justice. Un acte déposé par votre avocat a été enregistré au greffe dans votre dossier de '+d.nature.toLowerCase()+'. Aucune démarche n’est nécessaire de votre part.')}
+ render()}
+function motifModal(id,kind){const reg=kind==='regul';openModal(`<h2>${ic(reg?'alert':'ban',24)}${reg?'Demander une régularisation':'Rejeter la transmission'}</h2>
+ <p class="muted">${reg?'L’avocat sera invité à compléter ou corriger sa transmission.':'La transmission sera rejetée et l’avocat informé du motif.'}</p>
+ <label class="f">Motif courant<select id="mm" onchange="document.getElementById('mt').value=this.value"><option value="">Choisir un motif…</option>${MOTIFS.map(m=>`<option>${m}</option>`).join('')}</select></label>
+ <label class="f">Précisions pour l’avocat<textarea id="mt" placeholder="Indiquez le motif de façon claire et précise"></textarea></label><div id="me"></div>
+ <div class="mrow"><button class="btn sec" onclick="closeModal()">Annuler</button><button class="btn ${reg?'':'dng'}" onclick="motifOk('${id}','${kind}')">${reg?'Envoyer la demande':'Rejeter la transmission'}</button></div>`)}
+function motifOk(id,kind){const v=val('mt').trim();if(v.length<8){document.getElementById('me').innerHTML='<p class="err">'+ic('alert',16)+'Le motif est obligatoire (8 caractères minimum).</p>';return}
+ const t=tr(id);t.motif=v;closeModal();
+ if(kind==='regul'){t.status='regularisation';hist(t,'Greffe','Régularisation demandée : '+v);notify('avocat','regularisation','Demande de régularisation',t.ref+' : '+v,{v:'a_tdetail',p:{id}})}
+ else{t.status='rejete';hist(t,'Greffe','Transmission rejetée : '+v);notify('avocat','regularisation','Transmission rejetée',t.ref+' : '+v,{v:'a_tdetail',p:{id}})}render()}
+function regulModal(id){S.reg={name:null};openModal(`<h2>${ic('edit',24)}Régulariser la transmission</h2><p class="muted">Motif du greffe : « ${esc(tr(id).motif)} »</p>
+ <label class="drop"><input type="file" class="sr" accept=".pdf,application/pdf" onchange="if(this.files[0])regSet(this.files[0].name)">${ic('upload',28)}<br><b>Joindre le document corrigé (PDF)</b></label>
+ <p style="text-align:center;margin-top:10px"><button class="btn sec sm" onclick="regSet('Constat_d_huissier.pdf')">Utiliser un fichier d’exemple</button></p><div id="rf"></div>
+ <div class="mrow"><button class="btn sec" onclick="closeModal()">Annuler</button><button class="btn" onclick="regOk('${id}')">Transmettre la régularisation</button></div>`)}
+function regSet(n){S.reg.name=n;document.getElementById('rf').innerHTML='<p class="small" style="margin-top:10px">'+ic('clip',16)+' '+esc(n)+' prêt à être transmis.</p>'}
+function regOk(id){if(!S.reg.name){document.getElementById('rf').innerHTML='<p class="err">'+ic('alert',16)+'Joignez le document corrigé avant de transmettre.</p>';return}
+ const t=tr(id);t.pieces.push({name:S.reg.name,size:'—'});t.status='recu_plateforme';hist(t,'Me Agbodjan','Régularisation transmise ('+S.reg.name+')');hist(t,'Plateforme','Accusé de réception technique émis');closeModal();
+ notify('greffe','nouvelle_transmission','Régularisation reçue',t.ref+' : document corrigé transmis par Me Sènami Agbodjan.',{v:'g_detail',p:{id}});render()}
+
+/* ===== Logique métier : rapports pénaux ===== */
+const hist2=(p,a,x)=>p.history.push({ts:nowISO(),a,t:x});
+function rapVerser(id){const p=rp(id);p.st='verse';p.cote='D-'+(48+DB.rap.length);hist2(p,'Greffe','Versé au dossier sous la cote '+p.cote);notify('avocat','rapport','Rapport versé au dossier',p.ref+' est coté '+p.cote+' au dossier '+dos(p.dossierId).ref+'.',{v:'a_rdetail',p:{id}});render()}
+function rapRemettre(id){const p=rp(id),d=dos(p.dossierId);p.st='magistrat';hist2(p,'Greffe','Remis au '+d.mag.charAt(0).toLowerCase()+d.mag.slice(1));notify('avocat','rapport','Rapport remis au magistrat',p.ref+' a été remis au '+d.mag.charAt(0).toLowerCase()+d.mag.slice(1)+'.',{v:'a_rdetail',p:{id}});render()}
+function rapConsult(id){const p=rp(id);p.st='consulte';hist2(p,'Magistrat','Rapport consulté');notify('avocat','rapport','Rapport consulté par le magistrat',p.ref+' a été consulté. Il figure au dossier examiné pour la décision.',{v:'a_rdetail',p:{id}});render()}
+
+/* ===== Logique métier : rendez-vous et suppléance ===== */
+const isFull=(day,slot)=>(parseInt(day.slice(-2),10)+SLOTS.indexOf(slot))%4===0;
+const newRdv=()=>({svc:null,jur:J1,day:null,slot:null});
+function rdvSet(k,v){S.rdv[k]=v;if(k==='day')S.rdv.slot=null;render()}
+function rdvOk(){const r=S.rdv;if(!(r.svc&&r.day&&r.slot))return;const a=SVCS[r.svc][2],code='RDV-'+(4900+DB.rdvs.length);
+ DB.rdvs.push({id:'v'+(++DB.nid),code,who:'justiciable',name:USERS.justiciable.name,svc:r.svc,jur:r.jur,day:r.day,slot:r.slot,agent:a,st:'confirme'});S.rdv=null;
+ notify('justiciable','rdv','Rendez-vous confirmé',`${code} : ${SVCS[r.svc][0]}, ${fK(r.day)} à ${r.slot}.`,{v:'rdv'},`Bonjour, ici le portail de la justice. Votre rendez-vous au greffe est confirmé pour ${fK(r.day)} à ${r.slot.replace(':',' heures ')}. Présentez-vous avec votre carte d’identité.`);render()}
+function rdvCancel(id){openModal(`<h2>${ic('calendar',24)}Annuler ce rendez-vous ?</h2><p class="muted">Le créneau sera libéré pour un autre justiciable. Vous pourrez en reprendre un à tout moment.</p><div class="mrow"><button class="btn sec" onclick="closeModal()">Garder le rendez-vous</button><button class="btn dng" onclick="rdvCancelOk('${id}')">Annuler le rendez-vous</button></div>`)}
+function rdvCancelOk(id){DB.rdvs.find(r=>r.id===id).st='annule';closeModal();toast('Rendez-vous annulé','ok');render()}
+function absModal(id){const a=ag(id),l=DB.rdvs.filter(r=>r.day===TODAY&&r.agent===id&&r.st!=='annule'),opts=DB.agents.filter(x=>x.id!==id&&!x.absent);
+ if(!opts.length){toast('Aucun agent présent pour assurer la suppléance.');return}
+ openModal(`<h2>${ic('alert',24)}Absence de ${agN(id)}</h2><p class="muted">${l.length} rendez-vous prévu${l.length>1?'s':''} aujourd’hui seront repris à la même heure. Les justiciables n’ont pas à revenir.</p>
+ <label class="f">Suppléant<select id="sup">${opts.map(o=>`<option value="${o.id}" ${o.id===a.supp?'selected':''}>${agN(o.id)}${o.id===a.supp?' (suppléant désigné)':''}</option>`).join('')}</select></label>
+ <label class="f chk"><input type="checkbox" id="prev" checked> Prévenir chaque justiciable par SMS et par appel vocal</label>
+ <div class="mrow"><button class="btn sec" onclick="closeModal()">Annuler</button><button class="btn" onclick="absOk('${id}')">${ic('swap',18)}Transférer les rendez-vous</button></div>`)}
+function absOk(id){const s=val('sup'),prev=document.getElementById('prev').checked,a=ag(id);a.absent=true;const l=DB.rdvs.filter(r=>r.day===TODAY&&r.agent===id&&r.st!=='annule');
+ l.forEach(r=>{r.orig=id;r.agent=s;r.st='reaffecte'});closeModal();
+ if(prev)l.filter(r=>r.who==='justiciable').forEach(r=>notify('justiciable','rdv','Votre rendez-vous est maintenu',`${agN(id)} est ${a.civ==='Mme'?'absente':'absent'} aujourd’hui. ${agN(s)} vous reçoit à ${r.slot}, ${ag(s).guichet.split(' – ')[0].toLowerCase()}.`,{v:'rdv'},`Bonjour, ici le portail de la justice. Votre rendez-vous d’aujourd’hui à ${r.slot.replace(':',' heures ')} est maintenu. ${agN(id)} est ${a.civ==='Mme'?'absente':'absent'}, ${agN(s)} vous recevra à sa place, ${ag(s).guichet.split(' – ')[0].toLowerCase()}. Vous n’avez rien à faire.`));
+ toast(`${l.length} rendez-vous repris par ${agN(s)}.${prev?' Tous les justiciables concernés sont prévenus.':''}`,'ok');render()}
+function agBack(id){ag(id).absent=false;toast(agN(id)+' est de retour. Les rendez-vous déjà transférés restent chez le suppléant.','ok');render()}
+
+/* ===== Logique métier : paiements ===== */
+function payOpen(id){S.pay={id,m:'mtn',tel:USERS[S.role].tel,ph:'form',err:''};payDraw()}
+function payDraw(){const p=S.pay,f=fee(p.id);let h='';
+ if(p.ph==='form')h=`<h2>${ic('wallet',24)}Régler ${money(f.m)}</h2><p class="muted">${esc(f.l)}, dossier ${f.ref}.</p>
+ <div class="choices" style="margin-bottom:16px">${Object.entries(PM).map(([k,l])=>`<button class="choice" aria-pressed="${p.m===k}" onclick="S.pay.m='${k}';payDraw()">${l}<span>${k==='card'?'Visa, Mastercard':'Validation sur votre téléphone'}</span></button>`).join('')}</div>
+ ${p.m==='card'?'<p class="small muted">Vous serez dirigé vers la page sécurisée de l’agrégateur de paiement. Le portail ne voit jamais vos données de carte.</p>':`<label class="f">Numéro ${PM[p.m]}<input id="ptel" type="tel" value="${esc(p.tel)}" inputmode="tel"></label>`}
+ ${p.err?`<p class="err">${ic('alert',16)}${p.err}</p>`:''}<div class="mrow"><button class="btn sec" onclick="closeModal()">Annuler</button><button class="btn" onclick="payGo()">Payer ${money(f.m)}</button></div>`;
+ if(p.ph==='wait')h=`<div style="text-align:center"><div class="buzz">${ic('mobile',40)}</div><h2 style="justify-content:center">${p.m==='card'?'Paiement sécurisé en cours':'Validez sur votre téléphone'}</h2><p class="muted">${p.m==='card'?'Connexion à la page de paiement…':'Un message de '+PM[p.m]+' s’affiche au '+esc(p.tel)+'. Saisissez votre code secret pour confirmer. Le portail ne voit jamais ce code.'}</p><div class="spin"></div></div>`;
+ if(p.ph==='done')h=`<div style="text-align:center"><div class="okcirc">${ic('check',34)}</div><h2 style="justify-content:center">Paiement confirmé</h2><p class="muted">Votre reçu est disponible dans « Paiements ».</p></div>
+ <div class="recept" style="margin-top:14px"><dl class="kv"><dt>Reçu</dt><dd>${f.rec}</dd><dt>Objet</dt><dd>${esc(f.l)}</dd><dt>Dossier</dt><dd>${f.ref}</dd><dt>Montant</dt><dd>${money(f.m)}</dd><dt>Moyen</dt><dd>${f.pm}</dd><dt>Date</dt><dd>${fDT(f.pts)}</dd></dl></div>
+ <div class="mrow"><button class="btn sec" onclick="dl()">${ic('download',18)}Télécharger le reçu</button><button class="btn" onclick="closeModal()">Terminer</button></div>`;
+ openModal(h)}
+function payGo(){const p=S.pay,f=fee(p.id);if(p.m!=='card'){const t=val('ptel');if(t.replace(/\D/g,'').length<8){p.err='Saisissez un numéro Mobile Money valide.';payDraw();return}p.tel=t}
+ p.ph='wait';payDraw();const ref=p.id;setTimeout(()=>{f.st='paye';f.rec='PAY-2026-0'+(1200+DB.nid);f.pm=PM[p.m];f.pts=nowISO();
+  const dm=DB.demandes.find(x=>x.fee===f.id);if(dm)dm.statut='En préparation au greffe';
+  notify(f.role,'paiement','Paiement confirmé',`${money(f.m)} réglés par ${PM[p.m]}. Reçu ${f.rec}.`,{v:'paie'});render();
+  if(S.pay&&S.pay.id===ref&&document.getElementById('modal').classList.contains('on')){S.pay.ph='done';payDraw()}},2300)}
+
+/* ===== Composants ===== */
+const badge=s=>`<span class="bd ${ST[s].c}">${ic(ST[s].i,14)}${ST[s].l}</span>`;
+const rbadge=s=>`<span class="bd ${RS[s].c}">${ic(RS[s].i,14)}${RS[s].l}</span>`;
+function tracker(t){
+ const m={brouillon:['todo','todo','todo','todo'],transmis:['done','current','todo','todo'],recu_plateforme:['done','done','todo','todo'],attente_verification:['done','done','current','todo'],regularisation:['done','done','warn','todo'],rejete:['done','done','fail','todo'],enregistre:['done','done','done','done']}[t.status];
+ const L=['Transmis','Reçu par la plateforme','Vérification par le greffe','Enregistré au greffe'],I={done:'check',current:'clock',warn:'alert',fail:'x',todo:''};
+ const li=i=>`<li class="${m[i]}"><span class="dot">${I[m[i]]?ic(I[m[i]],14):''}</span><span>${L[i]}</span></li>`;
+ return `<div class="trk"><div class="grp"><div class="gl">Réception technique (plateforme)</div><ol>${li(0)}${li(1)}</ol></div><div class="grp"><div class="gl">Enregistrement juridique (greffe)</div><ol>${li(2)}${li(3)}</ol></div></div>`}
+const seal=(t,anim)=>t.status==='enregistre'?`<div class="seal ${anim?'stamp':''}"><span class="disc">${ic('shield',26)}</span><div><b>Enregistré au greffe</b><div class="small">N° ${t.regNum}${t.regTs?', le '+fDT(t.regTs):''}</div></div></div>`:'';
+function rapTracker(p){const k=RORD.indexOf(p.st);return `<ol class="rtrk">${RSTEPS.map(([t,x],i)=>{const c=i<=k?(i===k&&k<3?'cur':'done'):'';return `<li class="${c}"><span class="dot">${c==='done'?ic('check',14):c==='cur'?ic('clock',14):''}</span><b>${t}</b>${x}</li>`}).join('')}</ol>`}
+const mini=d=>`<div class="seg" aria-hidden="true">${[1,2,3,4,5].map(i=>`<i class="${i<=d.stage?'on':''}"></i>`).join('')}</div>`;
+const chips=ch=>ch&&ch.length?`<span class="chs">${ch.map(c=>`<span>${ic(CHI[c],12)}${CHL[c]}</span>`).join('')}</span>`:'';
+function docList(t){const a=[];if(t.concl)a.push([t.concl,'Document principal']);t.pieces.forEach(p=>a.push([p,'Pièce complémentaire']));if(t.bordereau)a.push([{name:t.bordereau.name,size:t.bordereau.generated?'généré':'PDF'},'Bordereau de communication des pièces']);
+ return a.length?`<ul class="docs">${a.map(([f,k])=>`<li><span class="di">${ic('file',18)}</span><div class="grow"><b>${esc(f.name)}</b><div class="small muted">${k}, ${esc(f.size)}</div></div><button class="btn sec sm" onclick="toast('Aperçu simulé du document')">${ic('eye',16)}Ouvrir</button></li>`).join('')}</ul>`:'<p class="muted">Aucun document joint.</p>'}
+function bordTable(t){if(!t.bordereau)return '<div class="body muted">Aucun bordereau : pas de pièce complémentaire.</div>';return `<table class="rt"><thead><tr><th>N°</th><th>Pièce communiquée</th></tr></thead><tbody>${t.bordereau.items.map(i=>`<tr><td data-l="N°">${i.n}</td><td data-l="Pièce">${esc(i.t)}</td></tr>`).join('')}</tbody></table>`}
+const note=()=>`<div class="callout">${ic('shield',22)}<div><b>Réception technique et enregistrement juridique sont deux étapes distinctes.</b><br>L’accusé de réception atteste seulement que la plateforme a reçu les fichiers. L’acte n’est enregistré qu’après vérification par le greffe, qui délivre alors un certificat d’enregistrement.</div></div>`;
+function receipt(t){const d=dos(t.dossierId);return `<div class="recept"><h3>${ic('inbox',24)}Accusé de réception technique</h3><p class="muted small">Délivré automatiquement par la plateforme. Il ne vaut pas enregistrement au greffe.</p>
+ <dl class="kv"><dt>Transmission</dt><dd>${t.ref}</dd><dt>Expéditeur</dt><dd>${esc(t.sender.name)}<div class="small muted" style="font-weight:400">${t.sender.role}</div></dd><dt>Dossier</dt><dd>${d.ref}<div class="small muted" style="font-weight:400">${d.jur}</div></dd>
+ <dt>Nature de l’acte</dt><dd>${esc(t.acte)}${t.qualite?', '+esc(t.qualite).toLowerCase():''}</dd><dt>Date et heure</dt><dd>${fDT(t.ts)}</dd><dt>Statut</dt><dd>${badge(t.status)}</dd></dl>
+ <h4 style="margin-top:18px">Documents transmis</h4>${docList(t)}</div>`}
+const pageHead=(title,sub,actions='')=>`<div class="ph"><div class="grow"><h1>${title}</h1>${sub?`<p>${sub}</p>`:''}</div>${actions}</div>`;
+const crumb=(l,v)=>`<div class="crumb"><button onclick="go('${v}')">${l}</button> / </div>`;
+function rdvCard(r,act){const a=ag(r.agent),d=kDate(r.day);return `<div class="rdv"><div class="date"><span class="small">${d.toLocaleDateString('fr-FR',{month:'short',timeZone:'UTC'})}</span><b>${d.getUTCDate()}</b><span class="small">${r.slot}</span></div>
+ <div class="grow"><b>${SVCS[r.svc][0]}</b><div class="small muted">${cap(fK(r.day))}, ${r.jur}</div><div class="small muted">${a.guichet}</div>
+ ${r.st==='reaffecte'?`<div class="supp" style="margin:10px 0 0">${ic('swap',18)}<span>${agN(r.orig)} est ${ag(r.orig).civ==='Mme'?'absente':'absent'}. <b>${agN(r.agent)}</b> vous reçoit à la même heure. Vous n’avez rien à faire.</span></div>`:`<div class="small" style="margin-top:6px">Reçu par ${agN(r.agent)}, suppléant désigné : ${agN(a.supp)}</div>`}
+ <div class="small muted" style="margin-top:4px">Code ${r.code}</div></div>${act||''}</div>`}
+
+/* ===== Gabarits ===== */
+function pubShell(c,ch){return `<header class="pub-h"><div class="wrap"><button class="brand" onclick="go('home')" aria-label="Accueil">${logo()}<span><b>Portail de la justice</b><small>Services judiciaires en ligne</small></span></button>
+ <nav class="pnav" aria-label="Navigation principale"><button onclick="jump('espaces')">Espaces</button><button onclick="jump('offline')">Sans internet</button><button onclick="jump('fonctionnement')">Fonctionnement</button><button onclick="jump('existant')">Raccordements</button><button onclick="jump('assistance')">Aide</button></nav>
+ <div class="pact"><button class="btn" onclick="go('login')">${ic('lock',18)}Se connecter</button></div>
+ <button class="burger" aria-label="Menu" aria-expanded="${S.pubOpen}" onclick="S.pubOpen=!S.pubOpen;render()">${ic(S.pubOpen?'x':'menu',22)}</button></div>
+ ${S.pubOpen?`<nav class="mnav" aria-label="Menu mobile"><button onclick="jump('espaces')">Espaces</button><button onclick="jump('offline')">Sans internet</button><button onclick="jump('fonctionnement')">Fonctionnement</button><button onclick="jump('existant')">Raccordements</button><button onclick="jump('assistance')">Aide</button><button class="btn" onclick="go('login')">Se connecter</button></nav>`:''}</header>
+ <div class="${ch?'enter':''}">${c}</div>
+ <footer class="pf"><div class="wrap"><p><b style="color:#fff">Portail de la justice</b> (nom provisoire).</p><p>Maquette réalisée pour le Prix national de la simplification administrative. Elle n’est pas déployée, n’est reliée à aucun système du ministère de la Justice et ne contient que des données fictives.</p></div></footer>`}
+function shell(c,ch){const r=S.role,u=USERS[r],un=unread(r),key=PARENT[S.view]||S.view;
+ return `<header class="appbar"><div class="in"><button class="ab burger-a" aria-label="Menu" onclick="S.navOpen=!S.navOpen;render()">${ic(S.navOpen?'x':'menu',22)}</button>
+ <button class="brand" onclick="go('${u.home}')">${logo(32)}<span><b style="color:#fff">Portail de la justice</b><small>Espace ${u.label.toLowerCase()}</small></span></button><span class="grow"></span>
+ <button class="ab" onclick="go('notifs')" aria-label="Notifications : ${un} non lue(s)">${ic('bell',22)}${un?`<span class="cnt">${un}</span>`:''}</button>
+ <button class="ab" onclick="logout()" aria-label="Se déconnecter"><span class="un small">Se déconnecter</span>${ic('logout',20)}</button></div></header>
+ <div class="layout"><aside class="side ${S.navOpen?'open':''}" aria-label="Menu de l’espace"><div class="who"><b>${esc(u.name)}</b><span class="vf">${ic('shield',14)}${u.vf}</span></div>
+ ${NAV[r].map(([v,l,i])=>{const c=navCount(v);return `<button class="nv" ${v===key?'aria-current="page"':''} onclick="${v==='a_depot'?'startDepot()':v==='rdv'?`S.rdv=null;go('rdv')`:`go('${v}')`}">${ic(i,20)}${l}${c?`<span class="cnt">${c}</span>`:''}</button>`}).join('')}</aside>
+ <main id="main"><div class="${ch?'enter':''}">${c}</div></main></div>`}
+function render(){if(!['home','login'].includes(S.view)&&!S.role)S.view='home';const pub=['home','login'].includes(S.view);
+ const ch=S.view!==S.lastView||S.role!==S.lastRole||JSON.stringify(S.params)!==S.lastP;S.lastView=S.view;S.lastRole=S.role;S.lastP=JSON.stringify(S.params);
+ const ban='<div class="proto">Maquette de démonstration. Données fictives, aucun lien avec les systèmes du ministère de la Justice.</div>';
+ const v=VIEWS[S.view]();document.body.className=pub?'pub':'app';
+ document.getElementById('app').innerHTML=ban+(pub?pubShell(v,ch):shell(v,ch));renderDemo();
+ if(S.stampFor)setTimeout(()=>{S.stampFor=null},60)}
+function renderDemo(){document.getElementById('demo').innerHTML=`<div class="in"><b class="lbl">Démonstration</b>${['justiciable','avocat','greffe'].map(r=>`<button aria-pressed="${S.role===r}" onclick="switchRole('${r}')">${USERS[r].label}${unread(r)?`<span class="cnt">${unread(r)}</span>`:''}</button>`).join('')}<span class="grow"></span><button onclick="guide()">${ic('play',14)}<span class="lbl">Parcours guidé</span></button><button onclick="resetDemo()">${ic('history',14)}<span class="lbl">Réinitialiser</span></button></div>`}
+function guide(){openModal(`<h2>${ic('play',24)}Parcours de démonstration</h2><ol style="padding-left:20px;display:flex;flex-direction:column;gap:8px">
+<li><b>Connexion</b> : « Se connecter », profil Justiciable, NPI puis code SMS (482913). Côté Avocat, essayez AV-0187 (reconnu) puis AV-0412 (relais humain).</li>
+<li><b>Justiciable</b> : prendre un rendez-vous, régler un frais par Mobile Money, écouter l’état du dossier par appel vocal.</li>
+<li><b>Avocat</b> : « Déposer un acte » en 8 étapes, puis « Rapports pénaux » et « Remplir avec un exemple ».</li>
+<li><b>Greffe</b> : ouvrir la transmission, confirmer la réception, enregistrer (le sceau s’appose). Verser le rapport pénal au dossier puis le remettre au magistrat.</li>
+<li><b>Greffe</b> : « Rendez-vous et suppléance », signaler l’absence de Mme Clarisse Dossou. Revenir côté Justiciable : le rendez-vous est maintenu et l’appel vocal est disponible.</li>
+<li><b>Greffe</b> : « Accueil assisté » avec le NPI 1234567890, puis « Comptes à vérifier ».</li>
+<li><b>Accueil public</b> : le simulateur de code USSD, pour les téléphones sans internet.</li></ol><div class="mrow"><button class="btn" onclick="closeModal()">Commencer</button></div>`)}
+
+/* ===== Simulateur USSD ===== */
+function ussdText(){const s=S.u.s,v=DB.rdvs.find(r=>r.id==='v1');
+ if(s==='off')return 'Composez le code du portail sur n’importe quel téléphone, même sans internet.\n\nCode : *000#';
+ if(s==='menu')return 'Portail de la justice\nBonjour Rosine.\n1. État de mon dossier\n2. Mon prochain rendez-vous\n3. Ma prochaine audience\n4. Être rappelé par un agent\n0. Quitter';
+ if(s==='1')return 'TPI-COT/CIV/2026/1187\nÉtape : audience programmée.\nMise à jour : 29/10/2026.\n\n9. Retour';
+ if(s==='2')return v&&v.st!=='annule'?`${v.code}\n${fKs(v.day)} à ${v.slot}\nReçu par ${agN(v.agent)}${v.st==='reaffecte'?' (suppléant)':''}\n${ag(v.agent).guichet.split(' – ')[0]}\n\n9. Retour`:'Aucun rendez-vous à venir.\n\n9. Retour';
+ if(s==='3')return 'Audience le 03/12/2026 à 09h00\nSalle d’audience n° 2\nTPI de Cotonou\n\n9. Retour';
+ if(s==='4')return 'Demande enregistrée. Un agent du greffe vous rappellera sous 48 h ouvrées.\n\n9. Retour';
+ return 'Session terminée. Merci.'}
+function ussdHTML(){const off=S.u.s==='off'||S.u.s==='end';return `<div class="top"></div><div class="scr"><pre>${esc(ussdText())}</pre><div class="in"><input id="ux" aria-label="Saisie" inputmode="${off?'tel':'numeric'}" value="${off?'*000#':''}" onkeydown="if(event.key==='Enter')ussdSend()"><button onclick="ussdSend()">${off?'Appeler':'Envoyer'}</button></div></div><div class="cap">Code fictif, à attribuer par l’opérateur</div>`}
+function ussdSend(){const v=val('ux').trim(),s=S.u.s;if(s==='off'||s==='end'){S.u.s=v==='*000#'?'menu':'off'}else if(s==='menu'){S.u.s=['1','2','3','4'].includes(v)?v:v==='0'?'end':'menu'}else{S.u.s=v==='9'?'menu':s}
+ const e=document.getElementById('ussd');if(e){e.innerHTML=ussdHTML();const i=document.getElementById('ux');if(i)i.focus()}}
+
+/* ===== Vues publiques ===== */
+const VIEWS={};
+VIEWS.home=()=>`<section class="hero"><div class="wrap"><div><h1 class="a1">Suivez votre affaire en justice sans faire la queue au greffe.</h1>
+ <p class="lead a2">Un seul portail pour les justiciables, les avocats et les greffes du Bénin : l’état de chaque dossier, les rendez-vous, les paiements et le dépôt des actes, avec une alerte par SMS ou par appel vocal à chaque étape.</p>
+ <div class="row a3" style="margin-top:26px"><button class="btn lt" onclick="go('login')">${ic('lock',18)}Accéder à mon espace</button><button class="btn ol" onclick="jump('offline')">${ic('mobile',18)}Je n’ai pas de smartphone</button></div></div>
+ <div class="demo-card a4"><div id="herotrk" class="herotrk">${heroInner(2)}</div><div class="hint">${ic('shield',18)}<span>La plateforme confirme la réception des fichiers. Seul le greffe enregistre l’acte.</span></div></div></div></section>
+ <section class="band" id="espaces"><div class="wrap"><h2>Un espace pour chacun</h2><p class="lead">Chacun ne voit que ce qui le concerne, avec les démarches dont il a besoin.</p><div class="grid g3" style="margin-top:26px">
+ ${[['justiciable','user','Justiciable',['Connexion avec votre NPI, sans mot de passe','Rendez-vous au greffe, repris par un suppléant si l’agent est absent','Frais de greffe payés par Mobile Money','Alertes par SMS ou par appel vocal']],
+ ['avocat','scale','Avocat',['Accès vérifié sur la liste de l’Ordre des avocats','Dépôt des conclusions, mémoires et pièces','Rapport sur un dossier pénal remis au magistrat','Calendrier des échéances']],
+ ['greffe','building','Greffe',['Vérification et enregistrement des actes','Rapports pénaux versés au dossier','Absences des agents et suppléances','Accueil assisté au guichet']]].map(([r,i,t,l])=>`<div class="card space"><span class="ico">${ic(i,26)}</span><h3>Espace ${t.toLowerCase()}</h3><ul>${l.map(x=>`<li>${ic('check',16)}<span>${x}</span></li>`).join('')}</ul><button class="btn sec" onclick="S.lp='${r}';go('login');S.lp='${r}';render()">Entrer dans l’espace ${t.toLowerCase()}</button></div>`).join('')}</div></div></section>
+ <section class="band alt" id="offline"><div class="wrap"><div class="grid g2" style="align-items:center;gap:48px"><div><h2>Sans internet ou sans smartphone, le service reste le même.</h2><p class="lead" style="margin-bottom:28px">Un justiciable qui n’utilise pas internet garde l’accès à son dossier et à ses rendez-vous.</p><div class="ways">
+ ${[['mobile','Un code à composer sur tout téléphone','Le code USSD donne l’état du dossier et la date du prochain rendez-vous, sans connexion internet.'],['phone','Un appel vocal en français ou en langue nationale','Chaque étape importante est annoncée par un appel automatique. Le message peut être réécouté.'],['hand','Un agent qui fait la démarche avec vous','Au guichet, l’agent retrouve votre dossier avec votre NPI. Vous repartez avec un code de suivi.'],['users','Une personne de confiance','Un proche que vous désignez reçoit les mêmes alertes que vous.']].map(([i,t,x])=>`<div class="way"><span class="ico">${ic(i,22)}</span><div><h4>${t}</h4><p>${x}</p></div></div>`).join('')}
+ </div></div><div><div class="phone" id="ussd">${ussdHTML()}</div><p class="small muted" style="text-align:center;margin-top:14px">Essayez : composez *000#, puis tapez 1, 2 ou 3.</p></div></div></div></section>
+ <section class="band" id="fonctionnement"><div class="wrap"><h2>Comment ça marche</h2><p class="lead">Quatre étapes, de l’identification à la notification.</p><ol class="steps">
+ <li><h3>Identifiez-vous</h3><p>Avec votre NPI, votre numéro au tableau de l’Ordre ou votre matricule d’agent.</p></li><li><h3>Consultez ou déposez</h3><p>Le justiciable suit son dossier, l’avocat transmet ses actes et ses rapports.</p></li><li><h3>Le greffe vérifie</h3><p>L’agent contrôle, enregistre ou demande une correction motivée.</p></li><li><h3>Vous êtes prévenu</h3><p>Par SMS, appel vocal ou courriel, selon votre choix.</p></li></ol>${note()}</div></section>
+ <section class="band alt" id="existant"><div class="wrap"><h2>Conçu pour compléter l’existant</h2><p class="lead">Le portail ne remplace pas les outils de l’État : il s’y raccorde. Ces raccordements sont des propositions à valider avec les administrations concernées.</p><div class="grid g4" style="margin-top:26px">
+ ${[['folder','ROGEJ','Les actes déposés sur la plateforme du ministère restent la référence. Le portail y ajoute le suivi par le justiciable, les rendez-vous et les alertes.'],['id','NPI (ANIP)','Identification des justiciables par le numéro personnel d’identification.'],['scale','Ordre des avocats','Vérification des avocats sur la liste officielle, avec un contrôle humain en cas de doute.'],['wallet','Mobile Money','Paiement des frais de greffe par les opérateurs présents au Bénin.']].map(([i,t,x])=>`<div class="card"><span class="di" style="margin-bottom:12px">${ic(i,20)}</span><h3>${t}</h3><p class="muted" style="margin:0">${x}</p></div>`).join('')}</div></div></section>
+ <section class="band" id="assistance"><div class="wrap"><h2>Aide</h2><div class="grid g2" style="margin-top:20px;align-items:start"><div class="grid" style="gap:12px">
+ <div class="card row">${ic('phone',22)}<div><b>+229 01 00 00 00 00</b><div class="small muted">Du lundi au vendredi, de 8 h à 17 h (numéro fictif)</div></div></div><div class="card row">${ic('mail',22)}<div><b>assistance@portail-justice.exemple.bj</b><div class="small muted">Réponse sous 48 h ouvrées (adresse fictive)</div></div></div></div>
+ <div class="grid" style="gap:10px">${[['Faut-il créer un compte ?','Non. Le justiciable se connecte avec son NPI et un code reçu par SMS. L’avocat est reconnu par son numéro au tableau de l’Ordre.'],['L’accusé de réception vaut-il enregistrement ?','Non. Il confirme la réception technique des fichiers. L’enregistrement relève du greffe.'],['L’agent est absent le jour de mon rendez-vous ?','Votre rendez-vous est repris à la même heure par le suppléant désigné, et vous êtes prévenu par SMS et appel vocal.'],['Mes données sont-elles protégées ?','Connexion chiffrée, accès limité à vos dossiers, journal de chaque consultation.']].map(([q,a])=>`<details class="faq"><summary>${q}</summary><p>${a}</p></details>`).join('')}</div></div></div></section>`;
+function heroInner(i){const st=['transmis','recu_plateforme','attente_verification','enregistre'][i],t={status:st,regNum:'ENR-2026-1051'};
+ return `<div class="row" style="justify-content:space-between;margin-bottom:6px"><b>Mémoire en défense</b>${badge(st)}</div><p class="small muted" style="margin-bottom:14px">Transmission TR-2026-000304, dossier TC-COT/2026/0412</p>${tracker(t)}${seal(t,true)}`}
+let heroI=2;setInterval(()=>{const e=document.getElementById('herotrk');if(!e||matchMedia('(prefers-reduced-motion: reduce)').matches)return;heroI=(heroI+1)%4;e.innerHTML=heroInner(heroI)},2600);
+
+VIEWS.login=()=>{const p=S.lp,a=S.auth,err=a.err?`<p class="err" role="alert">${ic('alert',16)}${esc(a.err)}</p>`:'';let b='';
+ if(a.step==='check')b=`<div class="checking"><div class="spin"></div><b>${p==='justiciable'?'Vérification de votre NPI auprès de l’ANIP…':'Vérification sur la liste de l’Ordre des avocats…'}</b><p class="small muted">Démonstration : aucune donnée réelle n’est consultée.</p></div>`;
+ else if(p==='justiciable'&&a.step==='otp')b=`<div class="verified">${ic('check',20)}<span>NPI reconnu. Un code à 6 chiffres a été envoyé au ${USERS.justiciable.telM}.</span></div>
+ <label class="f" style="margin-top:18px">Code reçu par SMS<input id="otp" class="otp" inputmode="numeric" maxlength="6" autocomplete="one-time-code" value="482913" onkeydown="if(event.key==='Enter')authOtp()"><span class="h">Code de démonstration : 482913</span></label>${err}
+ <button class="btn wide" onclick="authOtp()">Se connecter</button><div class="row" style="justify-content:space-between;margin-top:10px"><button class="btn ghost" onclick="callModal('Bonjour, ici le portail de la justice. Votre code de connexion est : 4, 8, 2, 9, 1, 3. Je répète : 4, 8, 2, 9, 1, 3.','Code de connexion')">${ic('phone',16)}Recevoir le code par appel</button><button class="btn ghost" onclick="S.auth={step:'id'};render()">Changer de NPI</button></div>`;
+ else if(p==='avocat'&&a.step==='found')b=`<div class="verified">${ic('shield',24)}<div><b>${USERS.avocat.name}</b><br><span class="small">Inscrit au tableau de l’Ordre des avocats du Bénin sous le n° ${USERS.avocat.num}.</span></div></div><button class="btn wide" style="margin-top:18px" onclick="login('avocat')">Ouvrir mon espace</button>`;
+ else if(p==='avocat'&&a.step==='relay')b=`<div class="callout warnc">${ic('hand',22)}<div><b>Le numéro ${esc(a.bar)} ne figure pas sur la liste reçue de l’Ordre.</b><br>Votre demande est transmise à un agent, qui vérifie auprès de l’Ordre sous 48 h ouvrées. Vous serez prévenu par SMS et par courriel.</div></div><p class="small muted" style="margin-top:12px">Démonstration : la demande apparaît dans l’espace Greffe, rubrique « Comptes à vérifier ». Le numéro AV-0187 est reconnu.</p><button class="btn sec wide" onclick="S.auth={step:'id'};render()">Revenir</button>`;
+ else if(p==='justiciable')b=`<label class="f">Numéro personnel d’identification (NPI)<span class="h">10 chiffres, sur votre carte d’identité biométrique ou votre certificat d’identification personnelle.</span><input id="npi" inputmode="numeric" maxlength="10" value="1234567890" autocomplete="off" onkeydown="if(event.key==='Enter')authStart()"></label>${err}<button class="btn wide" onclick="authStart()">Recevoir mon code par SMS</button><p class="small muted" style="margin:12px 0 0;text-align:center">Aucun compte à créer, aucun mot de passe à retenir.</p>`;
+ else if(p==='avocat')b=`<label class="f">Numéro d’inscription au tableau<input id="bar" value="AV-0187" autocomplete="username"></label><label class="f">Mot de passe<input id="pw" type="password" value="demonstration" autocomplete="current-password" onkeydown="if(event.key==='Enter')authStart()"></label>${err}<button class="btn wide" onclick="authStart()">Vérifier et me connecter</button><p class="small muted" style="margin:12px 0 0">Première connexion : votre accès s’active dès que votre numéro est reconnu sur la liste de l’Ordre. Sinon, un agent vérifie à la main.</p>`;
+ else b=`<label class="f">Matricule<input id="mat" value="GR-0042" autocomplete="username"></label><label class="f">Mot de passe<input id="gpw" type="password" value="demonstration" autocomplete="current-password" onkeydown="if(event.key==='Enter')authStart()"></label>${err}<button class="btn wide" onclick="authStart()">Se connecter</button><p class="small muted" style="margin:12px 0 0">Les comptes des agents sont créés et habilités par leur juridiction.</p>`;
+ return `<div class="authbox"><div class="card"><h1 style="font-size:1.7rem">Connexion</h1><p class="muted">Qui êtes-vous ?</p>
+ <div class="seg3" role="group" aria-label="Profil">${[['justiciable','Justiciable'],['avocat','Avocat'],['greffe','Agent du greffe']].map(([k,l])=>`<button aria-pressed="${p===k}" ${a.step==='check'?'disabled':''} onclick="S.lp='${k}';S.auth={step:'id'};render()">${l}</button>`).join('')}</div>${b}
+ <div class="secure">${ic('lock',20)}<span>Connexion chiffrée. Chaque profil n’accède qu’aux dossiers qui le concernent et chaque consultation est journalisée.</span></div></div></div>`};
+
+/* ===== Vues communes ===== */
+VIEWS.notifs=()=>{const all=DB.notifs[S.role],l=S.nf==='unread'?all.filter(n=>!n.read):all;
+ return pageHead('Notifications',`${unread(S.role)} non lue(s). Chaque alerte part aussi sur les canaux choisis dans « Profil et alertes ».`,`<button class="btn sec" onclick="readAll()">${ic('check',18)}Tout marquer comme lu</button>`)+
+ `<div class="tabs" role="tablist"><button role="tab" aria-selected="${S.nf==='all'}" onclick="S.nf='all';render()">Toutes</button><button role="tab" aria-selected="${S.nf==='unread'}" onclick="S.nf='unread';render()">Non lues</button></div>
+ <div class="panel">${l.length?`<ul class="nl">${l.map(n=>`<li class="${n.read?'':'un'}"><div class="nrow"><button class="nmain" onclick="openNotif('${n.id}')"><span class="ni">${ic(NT[n.type]||'bell',20)}</span><span class="grow"><b>${esc(n.title)}</b><br><span class="muted">${esc(n.text)}</span><span class="meta"><span class="small muted">${fDT(n.ts)}</span>${chips(n.ch)}</span></span>${n.read?'':'<span class="dotu" title="Non lue"></span>'}</button>${n.ch&&n.ch.includes('voix')?`<button class="btn sec sm" onclick="playNotif('${n.id}')" aria-label="Écouter le message vocal">${ic('volume',16)}<span class="hide-m">Écouter</span></button>`:''}</div></li>`).join('')}</ul>`:'<div class="body muted">Aucune notification non lue.</div>'}</div>`};
+VIEWS.profil=()=>{const r=S.role,u=USERS[r],p=DB.prefs[r];
+ const idp=r==='justiciable'?`<dt>NPI</dt><dd>12•• •• ••90 <span class="bd green">${ic('check',12)}Vérifié ANIP</span></dd><dt>Téléphone</dt><dd>${u.tel}</dd><dt>Courriel</dt><dd>${u.email}</dd>`:r==='avocat'?`<dt>N° au tableau</dt><dd>${u.num} <span class="bd green">${ic('check',12)}Vérifié Ordre</span></dd><dt>Téléphone</dt><dd>${u.tel}</dd><dt>Courriel</dt><dd>${u.email}</dd>`:`<dt>Matricule</dt><dd>${u.num}</dd><dt>Juridiction</dt><dd>${J1}</dd><dt>Courriel</dt><dd>${u.email}</dd>`;
+ const sw=(k,t,x)=>`<label class="sw"><input type="checkbox" ${p[k]?'checked':''} onchange="setPref('${k}',this.checked)"><span class="grow"><b>${t}</b><span>${x}</span></span></label>`;
+ return pageHead('Profil et alertes','Choisissez comment être prévenu. Vous pouvez cumuler plusieurs canaux.')+`<div class="split"><div><div class="panel"><header><h2 class="grow">Comment être prévenu</h2><button class="btn sec sm" onclick="callModal('Bonjour, ici le portail de la justice. Ceci est un appel de test. Vous recevrez un appel comme celui-ci à chaque étape importante de votre dossier.','Appel de test')">${ic('phone',16)}Tester l’appel vocal</button></header><div class="body" style="padding-top:6px">
+ ${sw('sms','SMS','Un message court à chaque étape importante.')}${sw('voix','Appel vocal','Un appel automatique lit le message. Utile si vous ne lisez pas les SMS.')}
+ ${p.voix?`<label class="f" style="margin:4px 0 14px 60px">Langue de l’appel<select onchange="DB.prefs[S.role].lang=this.value;toast('Langue enregistrée','ok')">${['Français','Fon','Yoruba','Bariba','Dendi'].map(l=>`<option ${p.lang===l?'selected':''}>${l}</option>`).join('')}</select><span class="h">Langues nationales : messages à enregistrer avec des locuteurs natifs.</span></label>`:''}
+ ${sw('email','Courriel','Le détail complet, avec les documents en pièce jointe.')}</div></div>
+ ${r==='justiciable'?`<div class="panel"><header><h2>Personne de confiance</h2></header><div class="body">${sw('conf','Prévenir aussi un proche','Il reçoit les mêmes alertes, sans accès aux documents du dossier.')}${p.conf?`<dl class="kv" style="margin-top:10px"><dt>Nom</dt><dd>${p.confName}</dd><dt>Téléphone</dt><dd>${p.confTel}</dd></dl>`:''}</div></div>`:''}</div>
+ <div><div class="panel"><header><h2>Identité</h2></header><div class="body"><dl class="kv"><dt>Nom</dt><dd>${u.name}</dd>${idp}</dl></div></div>
+ ${r==='justiciable'?`<div class="callout">${ic('mobile',22)}<div><b>Sans internet</b><br>Composez *000# (code fictif) sur n’importe quel téléphone pour connaître l’état de votre dossier.</div></div>`:''}</div></div>`};
+VIEWS.paie=()=>{const l=fees(),du=l.filter(f=>f.st==='du'),pd=l.filter(f=>f.st==='paye').sort((a,b)=>b.pts.localeCompare(a.pts));
+ return pageHead('Paiements','Réglez les frais de greffe par Mobile Money ou par carte, sans vous déplacer. Le reçu est immédiat.')+
+ (du.length?`<h2 style="font-size:1.15rem">À régler</h2><div class="grid g2" style="margin-bottom:26px">${du.map(f=>`<div class="card fee"><div class="row" style="align-items:flex-start"><span class="icoc">${ic('wallet',22)}</span><div class="grow"><b>${esc(f.l)}</b><div class="small muted">Dossier ${f.ref}</div></div></div><div class="row" style="justify-content:space-between;margin-top:18px"><span class="amt">${money(f.m)}</span><button class="btn" onclick="payOpen('${f.id}')">Payer</button></div></div>`).join('')}</div>`:`<div class="empty">${ic('check',22)}<span>Aucun frais à régler.</span></div>`)+
+ `<div class="panel"><header><h2>Historique</h2></header>${pd.length?`<table class="rt"><thead><tr><th>Reçu</th><th>Objet</th><th>Montant</th><th>Moyen</th><th>Date</th><th></th></tr></thead><tbody>${pd.map(f=>`<tr><td data-l="Reçu"><span class="ref">${f.rec}</span></td><td data-l="Objet">${esc(f.l)}<div class="small muted">${f.ref}</div></td><td data-l="Montant">${money(f.m)}</td><td data-l="Moyen">${f.pm}</td><td data-l="Date">${fDs(f.pts)}</td><td><button class="btn sec sm" onclick="dl()">${ic('download',16)}Reçu</button></td></tr>`).join('')}</tbody></table>`:'<div class="body muted">Aucun paiement pour le moment.</div>'}</div>
+ <p class="small muted">Montants fictifs, à aligner sur les tarifs officiels des greffes.</p>`};
+
+/* ===== Espace justiciable ===== */
+const cTable=l=>`<table class="rt"><thead><tr><th>Référence</th><th>Nature de l’affaire</th><th>Étape</th><th>Mise à jour</th><th></th></tr></thead><tbody>${l.map(d=>`<tr><td data-l="Référence"><span class="ref">${d.ref}</span><div class="small muted">${d.jur}</div></td><td data-l="Nature">${d.nature}</td><td data-l="Étape"><b>${d.etat}</b>${mini(d)}</td><td data-l="Mise à jour">${fDs(d.maj)}</td><td><button class="btn sec sm" onclick="go('j_detail',{id:'${d.id}'})">Ouvrir</button></td></tr>`).join('')}</tbody></table>`;
+VIEWS.j_dash=()=>{const u=USERS.justiciable,l=myD(),aud=l.filter(d=>d.aud).sort((a,b)=>a.aud.date.localeCompare(b.aud.date))[0],du=fees().filter(f=>f.st==='du'),rv=myRdv().filter(r=>r.day>=TODAY)[0];
+ return pageHead('Bonjour, '+u.name,'Voici où en sont vos démarches.')+
+ (aud?`<div class="next"><div class="days"><b>${daysTo(aud.aud.date)}</b><span>jours</span></div><div class="grow"><span class="small" style="color:#B9C1E6">Prochaine audience</span><h2>${cap(fK(aud.aud.date))} à ${aud.aud.heure}</h2><span style="color:#C9D0EE">${aud.aud.salle}, ${aud.jur}</span></div><button class="btn lt sm" onclick="go('j_detail',{id:'${aud.id}'})">Voir le dossier</button></div>`:'')+
+ `<div class="qa">${[['calendar','Prendre rendez-vous au greffe',"S.rdv=newRdv();go('rdv')"],['wallet','Régler mes frais'+(du.length?` <span class="bd orange">${du.length} en attente</span>`:''),"go('paie')"],['copy','Demander une copie',"go('j_dem')"],['volume','Écouter l’état de mon dossier',"listenDossier('d1')"]].map(([i,t,a])=>`<button onclick="${a}"><span class="ico">${ic(i,22)}</span><span>${t}</span></button>`).join('')}</div>
+ <div class="split"><div class="panel"><header><h2 class="grow">Mes procédures</h2><button class="btn sec sm" onclick="go('j_proc')">Tout voir</button></header>${cTable(l)}</div>
+ <div><div class="panel"><header><h2 class="grow">Prochain rendez-vous</h2></header>${rv?rdvCard(rv):`<div class="body muted">Aucun rendez-vous prévu.</div>`}<div class="body" style="padding-top:0"><button class="btn sec sm" onclick="S.rdv=null;go('rdv')">Gérer mes rendez-vous</button></div></div>
+ <div class="panel"><header><h2 class="grow">Dernières alertes</h2><button class="btn sec sm" onclick="go('notifs')">Toutes</button></header><ul class="nl">${DB.notifs.justiciable.slice(0,3).map(n=>`<li class="${n.read?'':'un'}"><div class="nrow"><button class="nmain" onclick="openNotif('${n.id}')"><span class="ni">${ic(NT[n.type]||'bell',20)}</span><span class="grow"><b>${esc(n.title)}</b><br><span class="small muted">${fDs(n.ts)}</span></span></button></div></li>`).join('')}</ul></div></div></div>`};
+VIEWS.j_proc=()=>{const q=S.pf.toLowerCase(),l=myD().filter(d=>(d.ref+d.jur+d.nature).toLowerCase().includes(q));return pageHead('Mes procédures','Les affaires dans lesquelles vous êtes partie.')+`<div class="toolbar"><input type="text" placeholder="Rechercher par référence, juridiction ou nature" value="${esc(S.pf)}" oninput="S.pf=this.value;render();const e=document.querySelector('.toolbar input');e.focus();e.setSelectionRange(99,99)" aria-label="Rechercher"></div><div class="panel">${l.length?cTable(l):'<div class="body muted">Aucune procédure ne correspond. Essayez une partie de la référence, par exemple « 1187 ».</div>'}</div>`};
+VIEWS.j_detail=()=>{const d=dos(S.params.id);return crumb('Mes procédures','j_proc')+pageHead(d.ref,d.nature,`<button class="btn sec" onclick="listenDossier('${d.id}')">${ic('volume',18)}Écouter</button><button class="btn" onclick="S.dm='${d.id}';go('j_dem')">${ic('copy',18)}Demander une copie</button>`)+
+ `<div class="split"><div class="panel"><header><h2>Où en est votre dossier</h2></header><div class="body"><ol class="tl">${ST_STEPS.map(([t,x],i)=>{const k=d.stage===5||i+1<d.stage?'done':i+1===d.stage?'cur':'todo';const dt=d.dates[i];return `<li class="${k}"><span class="dot">${k==='done'?ic('check',18):k==='cur'?ic('clock',18):''}</span><div><h4>${t}</h4><p>${k==='todo'?'À venir':(dt?fD(dt)+'. ':'')+x}</p></div></li>`}).join('')}</ol></div></div>
+ <div>${d.aud?`<div class="next" style="margin-bottom:22px"><div class="grow"><span class="small" style="color:#B9C1E6">Audience programmée</span><h2>${cap(fK(d.aud.date))} à ${d.aud.heure}</h2><span style="color:#C9D0EE">${d.aud.salle}</span></div></div>`:''}
+ <div class="panel"><header><h2>Informations</h2></header><div class="body"><dl class="kv"><dt>Juridiction</dt><dd>${d.jur}</dd><dt>Parties</dt><dd>${d.parties}</dd><dt>Étape</dt><dd>${d.etat}</dd><dt>Mise à jour</dt><dd>${fD(d.maj)}</dd>${d.av?`<dt>Avocat</dt><dd>${USERS.avocat.name}</dd>`:''}</dl></div></div>
+ <div class="panel"><header><h2>Derniers événements</h2></header>${d.events.length?`<ul class="nl">${d.events.map(e=>`<li><div class="ev"><span class="small muted">${fD(e.ts)}</span><br>${e.t}</div></li>`).join('')}</ul>`:'<div class="body muted">Aucun événement récent.</div>'}</div></div></div>`};
+VIEWS.rdv=()=>{const r=S.rdv,list=myRdv();
+ if(!r)return pageHead('Rendez-vous au greffe','Choisissez votre heure et soyez reçu sans attente. Si l’agent est absent, son suppléant vous reçoit à la même heure.',`<button class="btn" onclick="S.rdv=newRdv();render()">${ic('plus',18)}Prendre un rendez-vous</button>`)+
+  `<div class="panel"><header><h2>Mes rendez-vous</h2></header>${list.length?list.map(x=>rdvCard(x,x.day>=TODAY?`<button class="btn sec sm" onclick="rdvCancel('${x.id}')">Annuler</button>`:'')).join(''):`<div class="body muted">Aucun rendez-vous. Utilisez « Prendre un rendez-vous ».</div>`}</div>`;
+ const days=workdays(6),svc=r.svc?SVCS[r.svc]:null,a=svc?ag(svc[2]):null,ok=r.svc&&r.day&&r.slot;
+ return crumb('Mes rendez-vous','rdv')+pageHead('Prendre un rendez-vous','Quatre choix, une confirmation. Tout tient sur cette page.')+
+ `<div class="split"><div class="panel"><div class="body fs">
+ <h3>Quelle démarche ?</h3><div class="choices">${Object.entries(SVCS).map(([k,[t,x]])=>`<button class="choice" aria-pressed="${r.svc===k}" onclick="rdvSet('svc','${k}')">${t}<span>${x}</span></button>`).join('')}</div>
+ <h3>Dans quelle juridiction ?</h3><div class="chips">${JURS.map((j,i)=>`<button class="chip" aria-pressed="${r.jur===j}" onclick="rdvSet('jur',JURS[${i}])">${j.replace('Tribunal de première instance de première classe','TPI').replace('Tribunal de première instance','TPI')}</button>`).join('')}</div>
+ <h3>Quel jour ?</h3><div class="chips">${days.map(k=>{const d=kDate(k);return `<button class="chip day" aria-pressed="${r.day===k}" onclick="rdvSet('day','${k}')">${d.toLocaleDateString('fr-FR',{weekday:'short',timeZone:'UTC'})}<small>${d.getUTCDate()} ${d.toLocaleDateString('fr-FR',{month:'short',timeZone:'UTC'})}</small></button>`}).join('')}</div>
+ <h3>À quelle heure ?</h3>${r.day?`<div class="chips">${SLOTS.map(s=>{const f=isFull(r.day,s);return `<button class="chip" ${f?'disabled aria-label="'+s+', complet"':''} aria-pressed="${r.slot===s}" onclick="rdvSet('slot','${s}')">${s}</button>`}).join('')}</div><p class="small muted" style="margin-top:-12px">Les créneaux barrés sont complets.</p>`:'<p class="muted">Choisissez d’abord un jour.</p>'}
+ </div></div>
+ <aside class="sticky"><div class="panel"><header><h2>Votre rendez-vous</h2></header><div class="body"><dl class="kv" style="grid-template-columns:110px 1fr"><dt>Démarche</dt><dd>${svc?svc[0]:'—'}</dd><dt>Juridiction</dt><dd>${r.jur}</dd><dt>Date</dt><dd>${r.day?cap(fK(r.day)):'—'}</dd><dt>Heure</dt><dd>${r.slot||'—'}</dd></dl>
+ ${a?`<div class="supp">${ic('swap',18)}<span>Reçu par <b>${agN(a.id)}</b>. En cas d’absence, <b>${agN(a.supp)}</b> vous reçoit à la même heure : vous n’avez pas à revenir.</span></div>`:''}
+ <p class="small muted">Confirmation par SMS et appel vocal. Présentez-vous avec votre carte d’identité.</p>
+ <div class="grid" style="gap:8px"><button class="btn wide" ${ok?'':'disabled'} onclick="rdvOk()">${ic('check',18)}Confirmer le rendez-vous</button><button class="btn sec wide" onclick="S.rdv=null;render()">Annuler</button></div></div></div></aside></div>`};
+VIEWS.j_dem=()=>{const er=S.errs,pre=S.dm,stc=s=>s==='En attente de paiement'?'orange':s==='En préparation au greffe'?'blue':'green';
+ return pageHead('Demandes de documents','Demandez une copie en ligne, réglez les frais par Mobile Money, retirez-la au greffe ou recevez-la par voie électronique.')+
+ `<div class="split"><div class="panel"><header><h2>Nouvelle demande</h2></header><div class="body">
+ <label class="f">Dossier<select id="dd">${myD().map(d=>`<option value="${d.id}" ${pre===d.id?'selected':''}>${d.ref}, ${d.nature}</option>`).join('')}</select></label>
+ <label class="f">Document demandé<select id="dt">${[['Copie simple de la décision',1000],['Copie certifiée conforme de la décision',1500],['Procès-verbal d’audience',1000],['Attestation de procédure en cours',500]].map(([x,m])=>`<option value="${x}|${m}">${x} (${money(m)})</option>`).join('')}</select></label>
+ <label class="f">Motif de la demande<span class="h">À quoi servira ce document.</span><textarea id="dm" placeholder="Ex. : formalités auprès du service des domaines"></textarea>${er.m?`<p class="err">${ic('alert',16)}${er.m}</p>`:''}</label>
+ <button class="btn" onclick="submitDem()">${ic('send',18)}Envoyer et régler les frais</button></div></div>
+ <div class="panel"><header><h2>Mes demandes</h2></header><ul class="nl">${DB.demandes.map(x=>`<li><div class="ev"><b>${x.id}</b><br>${x.type}<br><span class="muted small">${dos(x.d).ref}, le ${fDs(x.ts)}</span><div class="row" style="margin-top:8px"><span class="bd ${stc(x.statut)}">${x.statut}</span>${x.statut==='En attente de paiement'&&x.fee?`<button class="btn sm" onclick="payOpen('${x.fee}')">Payer ${money(fee(x.fee).m)}</button>`:''}</div></div></li>`).join('')}</ul></div></div>`};
+function submitDem(){const m=val('dm').trim();if(m.length<10){S.errs={m:'Indiquez le motif en une phrase (10 caractères minimum).'};S.dm=val('dd');render();return}
+ const d=dos(val('dd')),[t,mt]=val('dt').split('|'),id='DC-2026-'+String(DB.demandes.length+45).padStart(4,'0'),fid='f'+(++DB.nid);
+ DB.fees.push({id:fid,role:'justiciable',l:t,ref:d.ref,m:+mt,st:'du'});DB.demandes.unshift({id,d:d.id,type:t,motif:m,ts:nowISO(),statut:'En attente de paiement',fee:fid});S.errs={};S.dm=null;
+ notify('justiciable','info','Demande de copie enregistrée',id+' pour le dossier '+d.ref+'. Frais à régler : '+money(+mt)+'.',{v:'j_dem'});render();payOpen(fid)}
+
+/* ===== Espace avocat ===== */
+const tRow=(t,v,who)=>{const d=dos(t.dossierId);return `<tr><td data-l="Transmission"><span class="ref">${t.ref}</span></td><td data-l="Dossier">${d.ref}</td><td data-l="Acte">${esc(t.acte)}</td>${who?`<td data-l="Expéditeur">${esc(t.sender.name)}</td>`:''}<td data-l="Date">${fDT(t.ts)}</td><td data-l="Statut">${badge(t.status)}</td><td>${t.status==='brouillon'?`<button class="btn sm" onclick="resumeDraft('${t.id}')">Reprendre</button>`:`<button class="btn sec sm" onclick="go('${v}',{id:'${t.id}'})">Ouvrir</button>`}</td></tr>`};
+const tTable=(l,v,who,empty)=>l.length?`<table class="rt"><thead><tr><th>Transmission</th><th>Dossier</th><th>Acte</th>${who?'<th>Expéditeur</th>':''}<th>Date</th><th>Statut</th><th></th></tr></thead><tbody>${l.map(t=>tRow(t,v,who)).join('')}</tbody></table>`:`<div class="body muted">${empty||'Aucune transmission.'}</div>`;
+VIEWS.a_dash=()=>{const m=mine().filter(t=>t.status!=='brouillon'),next=avD().filter(d=>d.ech).sort((a,b)=>a.ech.localeCompare(b.ech));
+ return pageHead('Bonjour, '+USERS.avocat.name,USERS.avocat.bar+'.')+
+ `<div class="stats"><div class="stat"><b>${avD().length}</b><span>Dossiers actifs</span></div><div class="stat"><b>${m.filter(t=>['transmis','recu_plateforme','attente_verification'].includes(t.status)).length}</b><span>Actes en attente d’enregistrement</span></div><button class="stat" onclick="go('a_trans')"><b>${m.filter(t=>t.status==='regularisation').length}</b><span>Régularisation demandée</span></button><button class="stat" onclick="go('a_rap')"><b>${DB.rap.length}</b><span>Rapports pénaux suivis</span></button></div>
+ <div class="qa">${[['upload','Déposer un acte','startDepot()'],['report','Rédiger un rapport pénal',"S.rap=null;go('a_rnew')"],['send','Suivre mes transmissions',"go('a_trans')"],['calendar','Calendrier procédural',"go('a_cal')"]].map(([i,t,a])=>`<button onclick="${a}"><span class="ico">${ic(i,22)}</span><span>${t}</span></button>`).join('')}</div>
+ <div class="split"><div class="panel"><header><h2 class="grow">Dernières transmissions</h2><button class="btn sec sm" onclick="go('a_trans')">Tout voir</button></header>${tTable(m.slice().sort((a,b)=>b.ts.localeCompare(a.ts)).slice(0,4),'a_tdetail')}</div>
+ <div class="panel"><header><h2 class="grow">Échéances</h2><button class="btn sec sm" onclick="go('a_cal')">Calendrier</button></header><ul class="nl">${next.slice(0,5).map(d=>`<li><div class="ev"><b>${fDs(d.ech)}</b>${daysTo(d.ech)<=7?` <span class="bd red">dans ${daysTo(d.ech)} j</span>`:''}<br>${d.echL}<br><span class="small muted">${d.ref}</span></div></li>`).join('')}</ul></div></div>`};
+VIEWS.a_dossiers=()=>pageHead('Mes dossiers','Les dossiers dans lesquels vous êtes constitué.')+`<div class="panel"><table class="rt"><thead><tr><th>Référence</th><th>Parties</th><th>Nature</th><th>Échéance</th><th>Étape</th><th></th></tr></thead><tbody>${avD().map(d=>`<tr><td data-l="Référence"><span class="ref">${d.ref}</span>${d.penal?' <span class="bd red">Pénal</span>':''}<div class="small muted">${d.jur}</div></td><td data-l="Parties">${d.parties}</td><td data-l="Nature">${d.nature}</td><td data-l="Échéance">${d.ech?`<b>${fDs(d.ech)}</b><br><span class="small muted">${d.echL}</span>`:'—'}</td><td data-l="Étape"><b>${d.etat}</b>${mini(d)}</td><td>${d.penal?`<button class="btn sm" onclick="S.rap=newRap('${d.id}');go('a_rnew')">${ic('report',16)}Rapport</button>`:`<button class="btn sm" onclick="startDepot('${d.id}')">${ic('upload',16)}Déposer</button>`}</td></tr>`).join('')}</tbody></table></div>`;
+VIEWS.a_trans=()=>{const l=mine().slice().sort((a,b)=>b.ts.localeCompare(a.ts));return pageHead('Mes transmissions','Chaque dépôt, de la réception technique à l’enregistrement au greffe.',`<button class="btn" onclick="startDepot()">${ic('plus',18)}Déposer un acte</button>`)+note()+`<div class="panel" style="margin-top:20px">${tTable(l,'a_tdetail')}</div>`};
+VIEWS.a_tdetail=()=>{const t=tr(S.params.id),d=dos(t.dossierId);return crumb('Mes transmissions','a_trans')+pageHead(t.ref,esc(t.acte)+', dossier '+d.ref,badge(t.status)+(t.status==='regularisation'?`<button class="btn" onclick="regulModal('${t.id}')">${ic('edit',18)}Régulariser</button>`:''))+
+ ((t.status==='regularisation'||t.status==='rejete')?`<div class="callout warnc" style="margin-bottom:20px">${ic('alert',22)}<div><b>${t.status==='rejete'?'Transmission rejetée':'Régularisation demandée'} par le greffe</b><br>${esc(t.motif)}</div></div>`:'')+
+ `<div class="panel"><header><h2>Avancement</h2></header><div class="body">${tracker(t)}${seal(t,S.stampFor===t.id)}</div></div>${receipt(t)}<div class="grid g2" style="margin-top:22px;align-items:start"><div class="panel"><header><h3>Bordereau de communication des pièces</h3></header>${bordTable(t)}</div><div class="panel"><header><h3>Historique</h3></header><ul class="nl">${t.history.slice().reverse().map(h=>`<li><div class="ev"><span class="small muted">${fDT(h.ts)}, ${h.a}</span><br>${esc(h.t)}</div></li>`).join('')}</ul></div></div>`};
+VIEWS.a_recus=()=>pageHead('Documents reçus','Documents adressés par les greffes.')+`<div class="panel"><table class="rt"><thead><tr><th>Document</th><th>Dossier</th><th>Expéditeur</th><th>Reçu le</th><th></th></tr></thead><tbody>${DB.recus.map(r=>`<tr><td data-l="Document"><span class="ref">${esc(r.t)}</span></td><td data-l="Dossier">${dos(r.d).ref}</td><td data-l="De">${r.from}</td><td data-l="Reçu le">${fDT(r.ts)}</td><td><button class="btn sec sm" onclick="dl()">${ic('download',16)}Télécharger</button></td></tr>`).join('')}</tbody></table></div>`;
+VIEWS.a_cal=()=>{const [y,m]=S.cal,first=(new Date(Date.UTC(y,m,1)).getUTCDay()+6)%7,n=new Date(Date.UTC(y,m+1,0)).getUTCDate(),pad=x=>String(x).padStart(2,'0'),key=d=>`${y}-${pad(m+1)}-${pad(d)}`;
+ const ev=DB.cal.filter(e=>e.d.startsWith(`${y}-${pad(m+1)}`)),by=d=>ev.filter(e=>e.d===key(d));let cells=['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'].map(x=>`<div class="dh">${x}</div>`).join('')+'<div class="c" style="background:var(--surface2)"></div>'.repeat(first);
+ for(let d=1;d<=n;d++){const e=by(d);cells+=`<div class="c ${key(d)===TODAY?'td':''} ${e.length?'hasev':''}"><b>${d}</b>${e.map(x=>`<span class="e ${x.k}" title="${esc(x.t)}, ${dos(x.did).ref}">${esc(x.t)}</span>`).join('')}</div>`}
+ const label=new Date(Date.UTC(y,m,1)).toLocaleDateString('fr-FR',{month:'long',year:'numeric',timeZone:'UTC'});
+ return pageHead('Calendrier procédural','Échéances et audiences de vos dossiers.')+`<div class="row" style="margin-bottom:14px"><button class="btn sec sm" onclick="calMv(-1)" aria-label="Mois précédent"><span style="display:inline-flex;transform:rotate(180deg)">${ic('chev',16)}</span></button><h2 style="margin:0;min-width:190px;text-align:center">${cap(label)}</h2><button class="btn sec sm" onclick="calMv(1)" aria-label="Mois suivant">${ic('chev',16)}</button></div>
+ <div class="cal">${cells}</div><div class="panel" style="margin-top:20px"><header><h3>Ce mois-ci</h3></header>${ev.length?`<ul class="nl">${ev.map(e=>`<li><div class="row ev"><b style="min-width:92px">${fDs(e.d)}</b><span class="bd ${e.k==='a'?'blue':'sky'}">${e.k==='a'?'Audience':'Échéance'}</span><span class="grow">${esc(e.t)}, <span class="muted">${dos(e.did).ref}</span></span></div></li>`).join('')}</ul>`:'<div class="body muted">Aucun événement ce mois-ci.</div>'}</div>`};
+function calMv(k){const d=new Date(Date.UTC(S.cal[0],S.cal[1]+k,1));S.cal=[d.getUTCFullYear(),d.getUTCMonth()];render()}
+
+/* ===== Rapports pénaux (avocat) ===== */
+const newRap=did=>({did:did||null,type:null,objet:'',faits:'',args:'',dem:'',pieces:[],cert:false,err:''});
+function rapSave(){['objet','faits','args','dem'].forEach(k=>{const e=document.getElementById('r_'+k);if(e)S.rap[k]=e.value})}
+function rapSet(k,v){rapSave();S.rap[k]=v;S.rap.err='';render()}
+function rapFiles(inp){rapSave();for(const f of inp.files){if(!/\.pdf$/i.test(f.name)){S.rap.err='« '+f.name+' » n’est pas un PDF.';continue}S.rap.pieces.push({name:f.name,size:fSize(f.size)})}render()}
+function rapEx(){const r=S.rap;r.did=r.did||'d6';r.type=r.type||RTYPES[0];r.objet='Analyse de la défense sur l’imputabilité des détournements';
+ r.faits='Le prévenu, gérant de la boutique, est poursuivi pour abus de confiance portant sur 2 400 000 FCFA. Les relevés de caisse produits par la partie civile couvrent une période pendant laquelle il était en congé (pièce n° 1).';
+ r.args='Les relevés ne permettent pas d’imputer les retraits au prévenu. Les plannings (pièce n° 2) montrent que trois autres employés avaient accès à la caisse sur la même période, sans contrôle des sessions.';
+ r.dem='À titre principal, constater que l’imputabilité n’est pas établie. À titre subsidiaire, ordonner une expertise comptable des sessions de caisse.';
+ r.pieces=[{name:'Attestation_de_conge.pdf',size:'180 Ko'},{name:'Plannings_mars_avril.pdf',size:'260 Ko'}];r.err='';render()}
+function rapSubmit(){rapSave();const r=S.rap;let e='';
+ if(!r.did)e='Choisissez le dossier concerné.';else if(!r.type)e='Choisissez le type de document.';else if(r.objet.trim().length<5)e='Indiquez l’objet du rapport.';else if(r.faits.trim().length<20)e='Rédigez le rappel des faits (20 caractères minimum).';else if(r.dem.trim().length<10)e='Précisez ce que vous demandez au magistrat.';else if(!document.getElementById('r_cert').checked)e='Cochez la case de certification pour transmettre.';
+ if(e){r.err=e;render();return}
+ const id='p'+(++DB.nid),d=dos(r.did),p={id,ref:'RP-2026-00'+(31+DB.rap.length),dossierId:r.did,type:r.type,objet:r.objet.trim(),faits:r.faits.trim(),args:r.args.trim(),dem:r.dem.trim(),pieces:r.pieces.slice(),ts:nowISO(),st:'transmis',history:[{ts:nowISO(),a:'Me Agbodjan',t:'Rapport transmis au greffe'}]};
+ DB.rap.unshift(p);S.rap=null;notify('greffe','rapport','Nouveau rapport pénal',`${p.ref} transmis par ${SENDER.name}, dossier ${d.ref}.`,{v:'g_rdetail',p:{id}});go('a_rdetail',{id})}
+const rTable=(l,v)=>l.length?`<table class="rt"><thead><tr><th>Rapport</th><th>Dossier</th><th>Type</th><th>Transmis le</th><th>Statut</th><th></th></tr></thead><tbody>${l.map(p=>`<tr><td data-l="Rapport"><span class="ref">${p.ref}</span><div class="small muted">${esc(p.objet)}</div></td><td data-l="Dossier">${dos(p.dossierId).ref}</td><td data-l="Type">${p.type}</td><td data-l="Date">${fDs(p.ts)}</td><td data-l="Statut">${rbadge(p.st)}</td><td><button class="btn sec sm" onclick="go('${v}',{id:'${p.id}'})">Ouvrir</button></td></tr>`).join('')}</tbody></table>`:'<div class="body muted">Aucun rapport pour le moment.</div>';
+VIEWS.a_rap=()=>pageHead('Rapports pénaux','Votre analyse d’un dossier pénal, versée au dossier et remise au magistrat chargé de l’affaire.',`<button class="btn" onclick="S.rap=null;go('a_rnew')">${ic('plus',18)}Rédiger un rapport</button>`)+
+ `<div class="panel" style="margin-bottom:20px"><div class="body">${rapTracker({st:'transmis'}).replace('class="cur"','class=""')}</div></div><div class="panel">${rTable(DB.rap,'a_rdetail')}</div>`;
+VIEWS.a_rnew=()=>{if(!S.rap)S.rap=newRap();const r=S.rap,pen=avD().filter(d=>d.penal);
+ return crumb('Rapports pénaux','a_rap')+pageHead('Rédiger un rapport','Le greffe le verse au dossier puis le remet au magistrat. Vous êtes prévenu à chaque étape.',`<button class="btn sec" onclick="rapSave();rapEx()">${ic('edit',18)}Remplir avec un exemple</button>`)+
+ `<div class="split"><div class="panel"><div class="body fs">
+ <h3>Dossier pénal concerné</h3><div class="choices">${pen.map(d=>`<button class="choice" aria-pressed="${r.did===d.id}" onclick="rapSet('did','${d.id}')">${d.ref}<span>${d.parties}</span><span>${d.mag}</span></button>`).join('')}</div>
+ <h3>Type de document</h3><div class="chips">${RTYPES.map((t,i)=>`<button class="chip" aria-pressed="${r.type===t}" onclick="rapSet('type',RTYPES[${i}])">${t}</button>`).join('')}</div>
+ <label class="f">Objet<input id="r_objet" value="${esc(r.objet)}" placeholder="Ex. : observations sur la qualification des faits"></label>
+ <label class="f">Rappel des faits<span class="h">Les éléments du dossier utiles à votre analyse.</span><textarea id="r_faits">${esc(r.faits)}</textarea></label>
+ <label class="f">Analyse et arguments de la défense<textarea id="r_args">${esc(r.args)}</textarea></label>
+ <label class="f">Demandes au magistrat<span class="h">Ce que vous demandez, précisément.</span><textarea id="r_dem">${esc(r.dem)}</textarea></label>
+ <h3>Pièces jointes</h3><label class="drop"><input type="file" class="sr" accept=".pdf,application/pdf" multiple onchange="rapFiles(this)">${ic('upload',28)}<br><b>Ajouter des pièces (PDF)</b><br><span class="small muted">10 Mo maximum par fichier</span></label>
+ ${r.pieces.length?`<ul class="docs" style="margin-top:12px">${r.pieces.map((p,i)=>`<li><span class="di">${ic('clip',18)}</span><div class="grow"><b>Pièce n° ${i+1} : ${esc(p.name)}</b><div class="small muted">${p.size}</div></div><button class="btn sec sm" onclick="rapSave();S.rap.pieces.splice(${i},1);render()">Retirer</button></li>`).join('')}</ul>`:''}
+ <label class="f chk" style="margin-top:20px"><input type="checkbox" id="r_cert" ${r.cert?'checked':''} onchange="S.rap.cert=this.checked"> Je certifie être constitué dans ce dossier et l’exactitude des éléments transmis.</label>
+ ${r.err?`<p class="err" role="alert">${ic('alert',16)}${r.err}</p>`:''}<div class="wzf"><button class="btn sec" onclick="rapSave();toast('Brouillon enregistré','ok')">Enregistrer en brouillon</button><button class="btn" onclick="rapSubmit()">${ic('send',18)}Transmettre le rapport</button></div></div></div>
+ <aside class="sticky"><div class="panel"><header><h3>Après l’envoi</h3></header><div class="body"><ol class="tl">${RSTEPS.map(([t,x])=>`<li class="todo"><span class="dot"></span><div><h4>${t}</h4><p>${x}</p></div></li>`).join('')}</ol></div></div>
+ <div class="callout">${ic('lock',22)}<div><b>Diffusion restreinte.</b><br>Le rapport n’apparaît pas dans l’espace du justiciable. Son accès par les autres parties suit les règles habituelles de la procédure.</div></div></aside></div>`};
+function rapBody(p){const d=dos(p.dossierId);return `<div class="panel"><header><h2 class="grow">${esc(p.objet)}</h2></header><div class="body prose"><dl class="kv"><dt>Dossier</dt><dd>${d.ref}<div class="small muted" style="font-weight:400">${d.parties}</div></dd><dt>Destinataire</dt><dd>${d.mag}</dd><dt>Type</dt><dd>${p.type}</dd><dt>Transmis le</dt><dd>${fDT(p.ts)}</dd>${p.cote?`<dt>Cote au dossier</dt><dd>${p.cote}</dd>`:''}</dl>
+ <h4>Rappel des faits</h4><p>${esc(p.faits)}</p>${p.args?`<h4>Analyse et arguments de la défense</h4><p>${esc(p.args)}</p>`:''}<h4>Demandes au magistrat</h4><p>${esc(p.dem)}</p>
+ <h4>Pièces jointes</h4>${p.pieces.length?`<ul class="docs">${p.pieces.map((f,i)=>`<li><span class="di">${ic('file',18)}</span><div class="grow"><b>Pièce n° ${i+1} : ${esc(f.name)}</b><div class="small muted">${f.size}</div></div><button class="btn sec sm" onclick="toast('Aperçu simulé du document')">${ic('eye',16)}Ouvrir</button></li>`).join('')}</ul>`:'<p class="muted">Aucune pièce.</p>'}</div></div>`}
+const rHist=p=>`<div class="panel"><header><h3>Historique</h3></header><ul class="nl">${p.history.slice().reverse().map(h=>`<li><div class="ev"><span class="small muted">${fDT(h.ts)}, ${h.a}</span><br>${esc(h.t)}</div></li>`).join('')}</ul></div>`;
+VIEWS.a_rdetail=()=>{const p=rp(S.params.id);return crumb('Rapports pénaux','a_rap')+pageHead(p.ref,p.type,rbadge(p.st))+`<div class="panel"><header><h2>Avancement</h2></header><div class="body">${rapTracker(p)}</div></div><div class="split"><div>${rapBody(p)}</div><div>${rHist(p)}</div></div>`};
+
+/* ===== Assistant de dépôt (8 étapes) ===== */
+const newWiz=d=>({step:d?2:1,dossierId:d||null,acte:null,qualite:null,concl:null,pieces:[],bmode:'auto',bordereau:null,certify:false,phase:null,tid:null,draftId:null,err:''});
+function startDepot(d){S.wiz=newWiz(d);go('a_depot')}
+function resumeDraft(id){const t=tr(id);S.wiz=Object.assign(newWiz(),JSON.parse(JSON.stringify(t.wiz)),{draftId:id});go('a_depot')}
+const W=()=>S.wiz;
+function wzSet(k,v){W()[k]=v;W().err='';render()}
+function wzPrev(){W().step--;W().err='';render();window.scrollTo(0,0)}
+function wzNext(){const w=W();let e='';
+ if(w.step===1&&!w.dossierId)e='Sélectionnez un dossier pour continuer.';if(w.step===2&&!w.acte)e='Choisissez la nature de l’acte.';if(w.step===3&&!w.qualite)e='Indiquez votre qualité dans la procédure.';
+ if(w.step===4&&!w.concl)e='Ajoutez le document principal au format PDF.';if(w.step===6&&w.pieces.length&&w.bmode==='upload'&&!w.bordereau)e='Ajoutez votre bordereau ou choisissez la génération automatique.';if(w.step===7&&!w.certify)e='Cochez la case de certification pour transmettre.';
+ if(e){w.err=e;render();return}if(w.step===7){wzSubmit();return}w.step++;w.err='';render();window.scrollTo(0,0)}
+function wzFiles(inp,k){const w=W();for(const f of inp.files){if(!/\.pdf$/i.test(f.name)&&f.type!=='application/pdf'){w.err='« '+f.name+' » n’est pas un PDF. Seul le format PDF est accepté.';continue}if(f.size>10485760){w.err='« '+f.name+' » dépasse 10 Mo.';continue}
+ const o={name:f.name,size:fSize(f.size)};w.err='';if(k==='pieces')w.pieces.push(o);else w[k]=o}render()}
+function wzEx(k){const w=W(),d=dos(w.dossierId);w.err='';if(k==='concl')w.concl={name:(w.acte||'Conclusions').replace(/ /g,'_')+'_'+d.ref.replace(/\//g,'-')+'.pdf',size:'842 Ko'};
+ else if(k==='pieces'){const n=w.pieces.length+1;w.pieces.push({name:'Piece_'+n+'_'+['Contrat','Facture','Courrier','Constat'][(n-1)%4]+'.pdf',size:'3'+n+'0 Ko'})}else w.bordereau={name:'Bordereau_pieces.pdf',size:'120 Ko',items:w.pieces.map((p,i)=>({n:i+1,t:p.name.replace(/^Piece_\d+_|\.pdf$/g,'')}))};render()}
+function wzDraft(){const w=W(),id=w.draftId||'t'+(++DB.seq);let t=tr(id);const snap=JSON.parse(JSON.stringify(Object.assign({},w,{phase:null,err:''})));
+ if(!t){t={id,ref:'BR-2026-'+String(7+DB.trans.length).padStart(4,'0'),sender:SENDER,history:[],status:'brouillon',pieces:[],concl:null,bordereau:null};DB.trans.push(t)}
+ Object.assign(t,{dossierId:w.dossierId||'d1',acte:w.acte||'Acte à préciser',qualite:w.qualite,ts:nowISO(),wiz:snap});t.history.push({ts:nowISO(),a:'Me Agbodjan',t:'Brouillon enregistré'});w.draftId=id;toast('Brouillon enregistré dans « Mes transmissions »','ok')}
+function wzSubmit(){const w=W();let bd=null;if(w.pieces.length)bd=w.bmode==='auto'?{name:'Bordereau_'+w.pieces.length+'_pieces.pdf',generated:true,items:w.pieces.map((p,i)=>({n:i+1,t:p.name.replace(/^Piece_\d+_|\.pdf$/g,'').replace(/_/g,' ')}))}:w.bordereau;
+ if(w.draftId)DB.trans=DB.trans.filter(t=>t.id!==w.draftId);
+ const id='t'+(++DB.seq),t={id,ref:'TR-2026-000'+DB.seq,dossierId:w.dossierId,acte:w.acte,qualite:w.qualite,sender:SENDER,ts:nowISO(),status:'transmis',concl:w.concl,pieces:w.pieces.slice(),bordereau:bd,history:[{ts:nowISO(),a:'Me Agbodjan',t:'Acte transmis'}]};
+ DB.trans.push(t);w.step=8;w.phase='sending';w.tid=id;render();window.scrollTo(0,0);
+ setTimeout(()=>{t.status='recu_plateforme';hist(t,'Plateforme','Accusé de réception technique émis');if(W())W().phase='done';
+  notify('greffe','nouvelle_transmission','Nouvelle transmission',t.ref+' reçue de '+SENDER.name+', dossier '+dos(t.dossierId).ref+'.',{v:'g_detail',p:{id}});
+  if(S.view==='a_depot')render()},1700)}
+const dz=(k,label,multi)=>`<label class="drop"><input type="file" class="sr" accept=".pdf,application/pdf" ${multi?'multiple':''} onchange="wzFiles(this,'${k}')">${ic('upload',30)}<br><b>${label}</b><br><span class="small muted">PDF uniquement, 10 Mo maximum</span></label><p style="text-align:center;margin:10px 0 0"><button class="btn sec sm" onclick="wzEx('${k}')">Utiliser un fichier d’exemple</button></p>`;
+VIEWS.a_depot=()=>{if(!S.wiz)S.wiz=newWiz();const w=W(),d=w.dossierId?dos(w.dossierId):null,err=w.err?`<p class="err" role="alert">${ic('alert',16)}${w.err}</p>`:'';let b='';
+ if(w.step===1)b=`<h2>Pour quel dossier ?</h2><div class="choices">${avD().filter(x=>!x.penal).map(x=>`<button class="choice" aria-pressed="${w.dossierId===x.id}" onclick="wzSet('dossierId','${x.id}')">${x.ref}<span>${x.jur}</span><span>${x.parties}</span></button>`).join('')}</div>`;
+ if(w.step===2)b=`<h2>Quel acte déposez-vous ?</h2><div class="choices">${ACTES.map((a,i)=>`<button class="choice" aria-pressed="${w.acte===a}" onclick="wzSet('acte',ACTES[${i}])">${a}</button>`).join('')}</div>`;
+ if(w.step===3)b=`<h2>En quelle qualité ?</h2><div class="choices">${QUALITES.map(([q,x],i)=>`<button class="choice" aria-pressed="${w.qualite===q}" onclick="wzSet('qualite',QUALITES[${i}][0])">${q}<span>${x}</span></button>`).join('')}</div>`;
+ if(w.step===4)b=`<h2>Ajoutez vos ${/Mémoire/.test(w.acte||'')?'mémoires':'conclusions'}</h2>${dz('concl','Choisir le fichier PDF')}${w.concl?`<ul class="docs" style="margin-top:14px"><li><span class="di">${ic('file',18)}</span><div class="grow"><b>${esc(w.concl.name)}</b><div class="small muted">${w.concl.size}</div></div><button class="btn sec sm" onclick="wzSet('concl',null)">Retirer</button></li></ul>`:''}`;
+ if(w.step===5)b=`<h2>Des pièces à communiquer ?</h2><p class="muted">Facultatif. Ajoutez une ou plusieurs pièces.</p>${dz('pieces','Choisir les pièces (PDF)',true)}${w.pieces.length?`<ul class="docs" style="margin-top:14px">${w.pieces.map((p,i)=>`<li><span class="di">${ic('clip',18)}</span><div class="grow"><b>Pièce n° ${i+1} : ${esc(p.name)}</b><div class="small muted">${p.size}</div></div><button class="btn sec sm" onclick="W().pieces.splice(${i},1);render()">Retirer</button></li>`).join('')}</ul>`:''}`;
+ if(w.step===6)b=`<h2>Bordereau de communication des pièces</h2>${w.pieces.length?`<div class="choices"><button class="choice" aria-pressed="${w.bmode==='auto'}" onclick="wzSet('bmode','auto')">Le générer automatiquement<span>Numérote vos ${w.pieces.length} pièce(s)</span></button><button class="choice" aria-pressed="${w.bmode==='upload'}" onclick="wzSet('bmode','upload')">Ajouter mon bordereau<span>Fichier PDF préparé par vos soins</span></button></div>
+  ${w.bmode==='auto'?`<div class="panel"><table><thead><tr><th>N°</th><th>Pièce communiquée</th></tr></thead><tbody>${w.pieces.map((p,i)=>`<tr><td>${i+1}</td><td>${esc(p.name.replace(/^Piece_\d+_|\.pdf$/g,'').replace(/_/g,' '))}</td></tr>`).join('')}</tbody></table></div>`:dz('bordereau','Choisir le bordereau (PDF)')+(w.bordereau?`<p class="small" style="margin-top:10px">${ic('clip',16)} ${esc(w.bordereau.name)}</p>`:'')}`:`<div class="callout">${ic('help',22)}<div>Aucune pièce complémentaire : le bordereau n’est pas nécessaire. Passez à l’étape suivante.</div></div>`}`;
+ if(w.step===7){const bd=w.pieces.length?(w.bmode==='auto'?'Bordereau généré ('+w.pieces.length+' pièces)':w.bordereau?.name||'—'):'Non requis';b=`<h2>Vérifiez avant d’envoyer</h2><dl class="kv"><dt>Dossier</dt><dd>${d.ref}<div class="small muted" style="font-weight:400">${d.jur}</div></dd><dt>Nature de l’acte</dt><dd>${esc(w.acte)}</dd><dt>Qualité</dt><dd>${esc(w.qualite)}</dd><dt>Document principal</dt><dd>${esc(w.concl.name)}</dd><dt>Pièces</dt><dd>${w.pieces.length?w.pieces.map(p=>esc(p.name)).join('<br>'):'Aucune'}</dd><dt>Bordereau</dt><dd>${esc(bd)}</dd></dl>
+  <label class="f chk" style="margin-top:20px"><input type="checkbox" ${w.certify?'checked':''} onchange="wzSet('certify',this.checked)"> Je certifie l’exactitude des informations déclarées et la conformité des documents transmis.</label>`}
+ if(w.step===8){const t=tr(w.tid);b=w.phase==='sending'?`<div style="text-align:center;padding:30px 0"><div class="spin"></div><h2>Envoi en cours</h2><p class="muted">Transmission sécurisée vers le greffe du ${d.jur}…</p></div>`:
+  `<div class="callout okc" style="margin-bottom:20px">${ic('check',22)}<div><b>Votre acte est transmis.</b><br>Le greffe va le vérifier puis l’enregistrer. Vous serez prévenu à chaque changement.</div></div>${tracker(t)}<div style="margin:20px 0">${receipt(t)}</div><div class="wzf"><button class="btn sec" onclick="dl()">${ic('download',18)}Télécharger l’accusé</button><span class="row"><button class="btn sec" onclick="startDepot()">Nouveau dépôt</button><button class="btn" onclick="S.wiz=null;go('a_trans')">Voir mes transmissions</button></span></div>`}
+ const foot=w.step<8?`${err}<div class="wzf"><span class="row"><button class="btn sec" ${w.step===1?'disabled':''} onclick="wzPrev()">Précédent</button><button class="btn sec" onclick="wzDraft()">Enregistrer en brouillon</button></span><button class="btn" onclick="wzNext()">${w.step===7?ic('send',18)+'Transmettre au greffe':'Continuer'}</button></div>`:'';
+ return pageHead('Déposer un acte','Transmission électronique d’un acte de procédure au greffe.')+`<div class="panel"><div class="body"><ol class="wz" aria-label="Progression">${WSTEPS.map((s,i)=>`<li class="${i+1<w.step?'done':i+1===w.step?'cur':''}"><span class="n">${i+1<w.step?ic('check',16):i+1}</span><span class="t">${s}</span></li>`).join('')}</ol>
+ <div class="wzp"><i style="width:${w.step/8*100}%"></i></div><p class="small muted">Étape ${w.step} sur 8 : ${WSTEPS[w.step-1]}</p>${b}${foot}</div></div>`};
+
+/* ===== Espace greffe ===== */
+const gF={nouvelles:t=>['transmis','recu_plateforme'].includes(t.status),attente:t=>t.status==='attente_verification',enregistrees:t=>t.status==='enregistre',regul:t=>t.status==='regularisation',rejetees:t=>t.status==='rejete',toutes:t=>t.status!=='brouillon'};
+const gC=k=>DB.trans.filter(gF[k]).length;
+function allOps(){const o=[];DB.trans.forEach(t=>t.history.forEach(h=>o.push(Object.assign({ref:t.ref,id:t.id,v:'g_detail'},h))));DB.rap.forEach(p=>p.history.forEach(h=>o.push(Object.assign({ref:p.ref,id:p.id,v:'g_rdetail'},h))));return o.sort((a,b)=>b.ts.localeCompare(a.ts))}
+VIEWS.g_dash=()=>{const abs=DB.agents.filter(a=>a.absent),rt=DB.rdvs.filter(r=>r.day===TODAY&&r.st!=='annule').length,rap=DB.rap.filter(p=>p.st==='transmis'||p.st==='verse').length;
+ return pageHead('Bonjour, '+USERS.greffe.name,'Greffe du '+J1+'.')+
+ (abs.length?`<div class="callout warnc" style="margin-bottom:22px">${ic('swap',22)}<div><b>${abs.map(a=>agN(a.id)).join(', ')} ${abs.length>1?'sont absents':'est '+(abs[0].civ==='Mme'?'absente':'absent')} aujourd’hui.</b><br>Leurs rendez-vous ont été repris par les suppléants et les justiciables prévenus.</div></div>`:'')+
+ `<div class="stats"><button class="stat" onclick="S.gtab='nouvelles';go('g_list')"><b>${gC('nouvelles')}</b><span>Nouvelles transmissions</span></button><button class="stat" onclick="go('g_rap')"><b>${rap}</b><span>Rapports pénaux à traiter</span></button><button class="stat" onclick="go('g_rdv')"><b>${rt}</b><span>Rendez-vous aujourd’hui</span></button><button class="stat" onclick="go('g_verif')"><b>${DB.pend.length}</b><span>Comptes à vérifier</span></button></div>
+ <div class="panel"><header><h2 class="grow">Dernières transmissions</h2><button class="btn sec sm" onclick="S.gtab='toutes';go('g_list')">Tout voir</button></header>${tTable(DB.trans.filter(gF.toutes).sort((a,b)=>b.ts.localeCompare(a.ts)).slice(0,5),'g_detail',true)}</div>
+ <div class="panel"><header><h2 class="grow">Activité récente</h2><button class="btn sec sm" onclick="go('g_histo')">Historique complet</button></header><ul class="nl">${allOps().slice(0,5).map(h=>`<li><div class="row ev"><span class="small muted" style="min-width:140px">${fDT(h.ts)}</span><span class="grow">${esc(h.t)} <span class="muted">(${h.ref}, ${h.a})</span></span></div></li>`).join('')}</ul></div>`};
+VIEWS.g_list=()=>{const tabs=[['nouvelles','Nouvelles'],['attente','En vérification'],['enregistrees','Enregistrées'],['regul','À régulariser'],['rejetees','Rejetées'],['toutes','Toutes']];
+ const l=DB.trans.filter(gF[S.gtab]).sort((a,b)=>b.ts.localeCompare(a.ts));return pageHead('Transmissions','Actes transmis par les avocats.')+`<div class="tabs" role="tablist">${tabs.map(([k,x])=>`<button role="tab" aria-selected="${S.gtab===k}" onclick="S.gtab='${k}';render()">${x} (${gC(k)})</button>`).join('')}</div><div class="panel">${tTable(l,'g_detail',true,'Aucune transmission dans cette catégorie.')}</div>`};
+VIEWS.g_histo=()=>pageHead('Historique des opérations','Journal de toutes les opérations sur les transmissions et les rapports.')+`<div class="panel"><table class="rt"><thead><tr><th>Date et heure</th><th>Opération</th><th>Référence</th><th>Acteur</th></tr></thead><tbody>${allOps().map(h=>`<tr><td data-l="Date">${fDT(h.ts)}</td><td data-l="Opération">${esc(h.t)}</td><td data-l="Référence"><button class="btn sec sm" onclick="go('${h.v}',{id:'${h.id}'})">${h.ref}</button></td><td data-l="Acteur">${h.a}</td></tr>`).join('')}</tbody></table></div>`;
+VIEWS.g_detail=()=>{const t=tr(S.params.id),d=dos(t.dossierId),s=t.status,can=(...a)=>a.includes(s)?'':'disabled';
+ return crumb('Transmissions','g_list')+pageHead(t.ref,esc(t.acte)+', dossier '+d.ref,badge(s))+
+ `<div class="split"><div><div class="panel"><header><h2>Transmission reçue</h2></header><div class="body"><dl class="kv"><dt>Expéditeur</dt><dd>${esc(t.sender.name)}<div class="small muted" style="font-weight:400">${t.sender.role}</div></dd><dt>Dossier</dt><dd>${d.ref}<div class="small muted" style="font-weight:400">${d.jur}</div></dd><dt>Parties</dt><dd>${d.parties}</dd><dt>Nature de l’acte</dt><dd>${esc(t.acte)}</dd><dt>Qualité déclarée</dt><dd>${esc(t.qualite||'—')}</dd><dt>Reçue le</dt><dd>${fDT(t.ts)}</dd></dl>${t.motif&&(s==='regularisation'||s==='rejete')?`<p class="err" style="margin-top:14px">${ic('alert',16)}Motif communiqué : ${esc(t.motif)}</p>`:''}</div></div>
+ <div class="panel"><header><h3>Documents joints</h3></header><div class="body">${docList(t)}</div></div><div class="panel"><header><h3>Bordereau de pièces</h3></header>${bordTable(t)}</div></div>
+ <div><div class="panel"><header><h2>Que faire ?</h2></header><div class="body"><div class="grid" style="gap:10px">
+ <button class="btn" ${can('transmis','recu_plateforme')} onclick="confirmReception('${t.id}')">${ic('inbox',18)}Confirmer la réception</button>
+ <button class="btn okb" ${can('attente_verification')} onclick="registerAct('${t.id}')">${ic('shield',18)}Enregistrer au greffe</button>
+ <button class="btn sec" ${can('recu_plateforme','attente_verification')} onclick="motifModal('${t.id}','regul')">${ic('edit',18)}Demander une régularisation</button>
+ <button class="btn sec" ${can('recu_plateforme','attente_verification')} onclick="motifModal('${t.id}','rejet')">${ic('ban',18)}Rejeter avec motif</button>
+ <button class="btn ghost" onclick="S.hist=!S.hist;render()">${ic('history',18)}${S.hist?'Masquer':'Afficher'} l’historique</button></div>
+ ${s==='recu_plateforme'||s==='transmis'?'<p class="small muted" style="margin:12px 0 0">Confirmez d’abord la réception pour lancer la vérification, puis enregistrez l’acte.</p>':''}${s==='attente_verification'?'<p class="small muted" style="margin:12px 0 0">Après contrôle des pièces, enregistrez l’acte ou demandez une régularisation.</p>':''}</div></div>
+ <div class="panel"><header><h3>Avancement</h3></header><div class="body">${tracker(t)}${seal(t,S.stampFor===t.id)}</div></div>
+ ${S.hist?`<div class="panel"><header><h3>Historique</h3></header><ul class="nl">${t.history.slice().reverse().map(h=>`<li><div class="ev"><span class="small muted">${fDT(h.ts)}, ${h.a}</span><br>${esc(h.t)}</div></li>`).join('')}</ul></div>`:''}</div></div>`};
+VIEWS.g_rap=()=>pageHead('Rapports pénaux','Rapports des avocats à verser au dossier et à remettre au magistrat chargé de l’affaire.')+`<div class="panel">${rTable(DB.rap.slice().sort((a,b)=>RORD.indexOf(a.st)-RORD.indexOf(b.st)),'g_rdetail')}</div>`;
+VIEWS.g_rdetail=()=>{const p=rp(S.params.id),d=dos(p.dossierId),s=p.st;
+ return crumb('Rapports pénaux','g_rap')+pageHead(p.ref,p.type+', transmis par '+SENDER.name,rbadge(s))+`<div class="panel"><header><h2>Avancement</h2></header><div class="body">${rapTracker(p)}</div></div>
+ <div class="split"><div>${rapBody(p)}</div><div><div class="panel"><header><h2>Que faire ?</h2></header><div class="body"><div class="grid" style="gap:10px">
+ <button class="btn" ${s==='transmis'?'':'disabled'} onclick="rapVerser('${p.id}')">${ic('folder',18)}Verser au dossier</button>
+ <button class="btn" ${s==='verse'?'':'disabled'} onclick="rapRemettre('${p.id}')">${ic('scale',18)}Remettre au magistrat</button></div>
+ <p class="small muted" style="margin:12px 0 0">Destinataire : ${d.mag}. L’avocat est prévenu à chaque étape.</p>
+ ${s==='magistrat'?`<div class="secure" style="margin-top:14px">${ic('eye',20)}<div><span>Démonstration : simuler la lecture du rapport par le magistrat.</span><br><button class="btn sec sm" style="margin-top:8px" onclick="rapConsult('${p.id}')">Marquer comme consulté</button></div></div>`:''}</div></div>${rHist(p)}</div></div>`};
+VIEWS.g_rdv=()=>{const today=DB.rdvs.filter(r=>r.day===TODAY&&r.st!=='annule').sort((a,b)=>a.slot.localeCompare(b.slot));
+ return pageHead('Rendez-vous et suppléance',cap(fK(TODAY))+'. Chaque agent a un suppléant désigné : une absence ne renvoie plus personne chez soi.')+
+ `<div class="grid g3" style="margin-bottom:24px">${DB.agents.map(a=>{const n=today.filter(r=>r.agent===a.id).length;return `<div class="card agent ${a.absent?'abs':''}"><span class="avatar">${a.name.split(' ').map(x=>x[0]).join('')}</span><div class="grow"><b>${agN(a.id)}</b><div class="small muted">${a.guichet}</div>
+ <div class="row" style="margin:10px 0;gap:8px">${a.absent?`<span class="bd red">${a.civ==='Mme'?'Absente':'Absent'}</span>`:`<span class="bd green">${a.civ==='Mme'?'Présente':'Présent'}</span>`}<span class="bd grey">${n} rendez-vous</span></div>
+ <div class="small muted">Suppléant désigné : ${agN(a.supp)}</div><div style="margin-top:12px">${a.absent?`<button class="btn sec sm" onclick="agBack('${a.id}')">Signaler son retour</button>`:`<button class="btn sm" onclick="absModal('${a.id}')">${ic('alert',16)}Signaler une absence</button>`}</div></div></div>`}).join('')}</div>
+ <div class="panel"><header><h2>Rendez-vous du jour</h2></header>${today.length?`<table class="rt"><thead><tr><th>Heure</th><th>Justiciable</th><th>Démarche</th><th>Reçu par</th><th>Statut</th></tr></thead><tbody>${today.map(r=>`<tr><td data-l="Heure"><b>${r.slot}</b></td><td data-l="Justiciable">${esc(r.name)}<div class="small muted">${r.code}</div></td><td data-l="Démarche">${SVCS[r.svc][0]}</td><td data-l="Reçu par">${agN(r.agent)}</td><td data-l="Statut">${r.st==='reaffecte'?`<span class="bd orange">${ic('swap',14)}Repris, justiciable prévenu</span>`:'<span class="bd green">Confirmé</span>'}</td></tr>`).join('')}</tbody></table>`:'<div class="body muted">Aucun rendez-vous aujourd’hui.</div>'}</div>`};
+VIEWS.g_acc=()=>{const a=S.acc,u=USERS.justiciable;
+ return pageHead('Accueil assisté','Pour le justiciable qui se présente au guichet sans smartphone ou sans internet. L’agent fait la démarche avec lui.')+
+ `<div class="split"><div><div class="panel"><div class="body"><label class="f" style="margin:0">NPI du justiciable<span class="h">Lu sur sa carte d’identité biométrique ou son certificat d’identification personnelle.</span></label>
+ <div class="row" style="margin-top:6px"><input id="acc_npi" class="grow" style="margin:0;flex:1" inputmode="numeric" maxlength="10" value="${a?esc(a.npi):'1234567890'}" onkeydown="if(event.key==='Enter')accFind()"><button class="btn" onclick="accFind()">${ic('search',18)}Rechercher</button></div>${a&&a.err?`<p class="err">${ic('alert',16)}${a.err}</p>`:''}</div></div>
+ ${a&&a.ok?`<div class="panel" style="animation:fade .3s"><header><span class="avatar">RA</span><div class="grow"><h2 style="margin:0">${u.name}</h2><span class="vf">${ic('shield',14)}Identité confirmée par l’ANIP (simulation)</span></div></header><div class="body"><dl class="kv"><dt>Téléphone</dt><dd>${u.telM}</dd><dt>Procédures</dt><dd>${myD().map(d=>`${d.ref}<div class="small muted" style="font-weight:400">${d.etat}</div>`).join('')}</dd></dl>
+ <h3 style="margin-top:20px">Que souhaite-t-il faire ?</h3><div class="grid g2" style="gap:10px">
+ <button class="choice" onclick="accCall()">${ic('volume',20)} Lui faire entendre l’état de son dossier<span>Appel vocal envoyé sur son téléphone</span></button>
+ <button class="choice" onclick="accRdv()">${ic('calendar',20)} Lui fixer un rendez-vous<span>Confirmé par SMS et appel vocal</span></button>
+ <button class="choice" onclick="accCopy()">${ic('copy',20)} Enregistrer une demande de copie<span>Paiement au guichet ou par Mobile Money</span></button>
+ <button class="choice" onclick="toast('Code de suivi imprimé : SUIVI-4821 (simulation)','ok')">${ic('file',20)} Imprimer son code de suivi<span>Pour le code USSD ou un prochain passage</span></button></div>
+ ${a.done&&a.done.length?`<h4 style="margin-top:20px">Fait pendant cet accueil</h4><ul class="docs">${a.done.map(x=>`<li><span class="di">${ic('check',18)}</span><span>${x}</span></li>`).join('')}</ul>`:''}</div></div>`:''}</div>
+ <aside><div class="callout">${ic('hand',22)}<div><b>Le justiciable n’a besoin ni de compte ni d’internet.</b><br>Il repart avec un code de suivi et reçoit les nouvelles de son dossier par SMS ou appel vocal, dans sa langue.</div></div></aside></div>`};
+function accFind(){const v=val('acc_npi').replace(/\s/g,'');if(!/^\d{10}$/.test(v)){S.acc={npi:v,err:'Le NPI comporte 10 chiffres.'};render();return}
+ if(v!==USERS.justiciable.npi){S.acc={npi:v,err:'Aucun justiciable trouvé pour ce NPI dans la base de démonstration. Essayez 1234567890.'};render();return}S.acc={npi:v,ok:true,done:[]};render()}
+function accCall(){callModal(dosVoice(dos('d1')),'Message envoyé au '+USERS.justiciable.telM);S.acc.done.push('État du dossier communiqué par appel vocal');render()}
+function accRdv(){const day=workdays(1)[0],code='RDV-'+(4900+DB.rdvs.length);DB.rdvs.push({id:'v'+(++DB.nid),code,who:'justiciable',name:USERS.justiciable.name,svc:'consult',jur:J1,day,slot:'09:00',agent:'a1',st:'confirme'});
+ notify('justiciable','rdv','Rendez-vous fixé au guichet',`${code} : ${fK(day)} à 09:00, consultation du dossier.`,{v:'rdv'},`Bonjour, ici le portail de la justice. Un rendez-vous a été fixé pour vous ${fK(day)} à 9 heures, au greffe du tribunal de Cotonou.`);
+ S.acc.done.push(`Rendez-vous ${code} fixé ${fK(day)} à 09:00`);render()}
+function accCopy(){const fid='f'+(++DB.nid),id='DC-2026-'+String(DB.demandes.length+45).padStart(4,'0'),d=dos('d4');DB.fees.push({id:fid,role:'justiciable',l:'Copie simple de la décision',ref:d.ref,m:1000,st:'du'});
+ DB.demandes.unshift({id,d:d.id,type:'Copie simple de la décision',motif:'Demande enregistrée au guichet.',ts:nowISO(),statut:'En attente de paiement',fee:fid});
+ notify('justiciable','info','Demande de copie enregistrée au guichet',`${id} : ${money(1000)} à régler au guichet ou par Mobile Money.`,{v:'j_dem'});S.acc.done.push(`Demande ${id} enregistrée, ${money(1000)} à régler`);render()}
+VIEWS.g_verif=()=>pageHead('Comptes à vérifier','Avocats dont le numéro n’a pas été trouvé automatiquement sur la liste de l’Ordre. Un agent vérifie avant toute activation.')+
+ (DB.pend.length?DB.pend.map(p=>`<div class="card" style="margin-bottom:14px;animation:fade .3s"><div class="row" style="align-items:flex-start"><span class="avatar">${ic('id',22)}</span><div class="grow"><b>${esc(p.name)}</b><div class="small muted">N° déclaré : ${esc(p.num)}, demande du ${fDT(p.ts)}</div><p class="small" style="margin:8px 0 0">${esc(p.motif)}</p></div>
+ <div class="row"><button class="btn sec sm" onclick="vNo('${p.id}')">${ic('ban',16)}Refuser</button><button class="btn okb sm" onclick="vOk('${p.id}')">${ic('check',16)}Activer après vérification</button></div></div></div>`).join(''):`<div class="empty">${ic('check',22)}<span>Aucune demande en attente. Chaque nouvelle demande apparaîtra ici.</span></div>`)+
+ `<div class="callout">${ic('help',22)}<div>Vérification recommandée : appel au secrétariat de l’Ordre ou consultation de la dernière liste officielle. La décision et son motif sont journalisés.</div></div>`;
+function vOk(id){const p=DB.pend.find(x=>x.id===id);DB.pend=DB.pend.filter(x=>x.id!==id);toast(`Compte ${p.num} activé. L’avocat est prévenu par SMS et courriel.`,'ok');render()}
+function vNo(id){const p=DB.pend.find(x=>x.id===id);DB.pend=DB.pend.filter(x=>x.id!==id);toast(`Demande ${p.num} refusée. Le motif est communiqué au demandeur.`,'ok');render()}
+
+/* ===== Démarrage ===== */
+render();
+</script>
+</body>
+</html>
